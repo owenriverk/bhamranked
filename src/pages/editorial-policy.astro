@@ -1,0 +1,129 @@
+---
+/**
+ * /editorial-policy — the trust foundation.
+ *
+ * Most of this page is canonical project-level positioning that's safe to
+ * draft (the no-paid-placement statement, the "what we don't do" list, the
+ * corrections-and-updates section). One section is voice-bearing (ranking
+ * criteria) and marked [OWEN INPUT NEEDED]. Article JSON-LD is emitted so
+ * search engines can index the policy as a standalone document.
+ */
+
+import TrustPageLayout from '../layouts/TrustPageLayout.astro';
+import {
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+} from '../lib/schema';
+
+const publishedDate = new Date('2026-05-14');
+const lastUpdated = new Date('2026-05-14');
+
+const title = 'Editorial Policy — bhamranked';
+const description =
+  'No paid placement. No comped meals. No sponsored content disguised as editorial. The policy that governs every piece on bhamranked.';
+
+const schemaBlocks = [
+  buildArticleSchema({
+    title,
+    description,
+    slug: '/editorial-policy',
+    published: publishedDate,
+    modified: lastUpdated,
+    type: 'Article',
+  }),
+  buildBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Editorial Policy', url: '/editorial-policy' },
+  ]),
+];
+---
+
+<TrustPageLayout
+  title={title}
+  description={description}
+  kicker="Editorial Policy"
+  dek="No paid placement. No comped meals. No sponsored content disguised as editorial. The policy that governs every piece on bhamranked, written down so it can be held to."
+  lastUpdated={lastUpdated}
+  schemaBlocks={schemaBlocks}
+>
+  <section class="section">
+    <h2>The promise</h2>
+    <div class="pull-statement">
+      <p>
+        No business has ever paid for placement on bhamranked. No meal has ever
+        been comped. No piece on this site was reviewed, edited, or approved by
+        the business before publication. If that ever changes, you'll see it
+        labeled clearly and we'll separate the editorial side from the commerce
+        side completely. The rankings on this site reflect one person's honest
+        experience after visiting each spot in person.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>How rankings are made</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: 150-300 words]</span>
+      How you actually rank places. Food first then atmosphere then value? What
+      gets a spot up-ranked? What gets one down-ranked? Does the room matter,
+      does service matter, does the price-to-quality ratio matter, does the
+      neighborhood vibe matter, and in what order. In your own words, the way
+      you'd explain it to a friend who asked.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We don't accept paid placement.</li>
+      <li>We don't run sponsored content disguised as editorial.</li>
+      <li>We don't link out to affiliate offers from editorial pieces.</li>
+      <li>
+        We don't use AI to generate first-person content or fake visit details.
+      </li>
+      <li>
+        The author visits every spot in person and writes from real experience.
+      </li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Corrections and updates</h2>
+    <p>
+      If a piece has an error of fact (a wrong address, wrong hours, an
+      ownership change we missed), email
+      <a href="mailto:corrections@bhamranked.com">corrections@bhamranked.com</a>
+      and we'll fix it within 48 hours. Major corrections get a dated note at
+      the bottom of the affected piece.
+    </p>
+    <p>
+      Every piece has a <code>last_verified</code> date. When it's been more
+      than 6 months since the last visit, we revisit before that date updates.
+      If a business has closed or changed hands, the affected piece gets a
+      banner at the top noting the change while we update the ranking.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>What changes will look like</h2>
+    <p>
+      This page itself is dated. The last-updated stamp at the top of the page
+      reflects the most recent change to the policy. If the policy ever
+      changes (for example, if bhamranked someday accepts advertising), that
+      change will be announced on this page with the date, the reason, and
+      what the new clean-lanes separation looks like. We won't quietly change
+      the rules.
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="cta-card">
+      <h3>Want more detail?</h3>
+      <p>
+        Methodology lives on its own page: how a visit happens, how the
+        ranking gets assembled, what each trust signal on a piece means.
+      </p>
+      <a href="/methodology" class="cta-link">Read the methodology &rarr;</a>
+    </div>
+  </section>
+</TrustPageLayout>

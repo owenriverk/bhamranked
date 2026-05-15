@@ -1,0 +1,119 @@
+---
+/**
+ * /about — Owen's author bio page.
+ *
+ * Voice-bearing content is marked `[OWEN INPUT NEEDED]` and rendered as
+ * .owen-input callouts. The Person JSON-LD is emitted with the canonical
+ * fields populated; sameAs URLs are placeholders that Owen will fill in
+ * before launch. Once filled, this page becomes the EEAT anchor for every
+ * piece (every Article and Review schema references @id on this page).
+ */
+
+import TrustPageLayout from '../layouts/TrustPageLayout.astro';
+import {
+  buildPersonSchema,
+  buildBreadcrumbSchema,
+} from '../lib/schema';
+
+const title = 'About Owen — bhamranked';
+const description =
+  'Owen is the editor of bhamranked. Bellingham, WA. Visits every spot in person, pays for every meal, writes every word.';
+
+const schemaBlocks = [
+  buildPersonSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'About', url: '/about' },
+  ]),
+];
+---
+
+<TrustPageLayout
+  title={title}
+  description={description}
+  kicker="Who ranked these"
+  dek="The editor of bhamranked. Bellingham resident. Every piece on this site is one person's honest experience after visiting each spot in person."
+  schemaBlocks={schemaBlocks}
+>
+  <section class="section">
+    <div class="portrait-placeholder" role="img" aria-label="Portrait of Owen">
+      <span class="placeholder-label">Photo</span>
+    </div>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED]</span>
+      Replace the portrait placeholder above with a real photo of you. A simple
+      head-and-shoulders crop works. Save the file to public/owen-portrait.jpg
+      (or .avif) and wire it into the placeholder div.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>The basic narrative</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: 100-150 words]</span>
+      How long you've lived in Bellingham, what you do here, the basic
+      narrative. Where did you come from, why did you land in Bellingham, what's
+      your day job, what does life look like here.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Why food and drink</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: 80-120 words]</span>
+      Why food and drink. What makes you qualified to rank these places. Any
+      culinary background, frequency of dining out, the reasons a reader should
+      trust your ranking over a stranger's Yelp review or a chatbot's list.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>What I'm trying to do here</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: 80-120 words]</span>
+      Your editorial north star. What you're trying to do with bhamranked. The
+      one-sentence version: a Bellingham directory you'd actually trust. The
+      longer version: why this matters, who it's for, what it isn't.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>One more thing</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: optional]</span>
+      Anything else you want a stranger to know about you. A hobby outside food,
+      a side project, a reason you're in Bellingham specifically. Optional. If
+      nothing comes to mind, delete this whole section.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Where to find me elsewhere</h2>
+    <p>
+      These profiles feed the Person schema on this page so Google and AI
+      models can verify the byline. Replace each placeholder URL with the real
+      one before launch.
+    </p>
+    <dl class="data-list">
+      <dt>LinkedIn</dt>
+      <dd>[OWEN INPUT NEEDED: actual LinkedIn URL]</dd>
+      <dt>Twitter / X</dt>
+      <dd>[OWEN INPUT NEEDED: actual Twitter URL]</dd>
+      <dt>Instagram</dt>
+      <dd>[OWEN INPUT NEEDED: actual Instagram URL]</dd>
+      <dt>Personal site</dt>
+      <dd>[OWEN INPUT NEEDED: actual personal site URL]</dd>
+    </dl>
+  </section>
+
+  <section class="section">
+    <div class="cta-card">
+      <h3>Want to get in touch?</h3>
+      <p>
+        Corrections, businesses asking to be considered for a visit, and other
+        inquiries all live on a separate page so each path is clear.
+      </p>
+      <a href="/contact" class="cta-link">Contact bhamranked &rarr;</a>
+    </div>
+  </section>
+</TrustPageLayout>

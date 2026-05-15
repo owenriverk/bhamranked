@@ -1,0 +1,155 @@
+---
+/**
+ * /methodology — deeper detail than editorial-policy on how visits and
+ * rankings actually happen.
+ *
+ * Two voice-bearing sections (visit workflow + ranking workflow) marked
+ * [OWEN INPUT NEEDED]. The "trust signals" section is safe to draft because
+ * it explains the schema fields baked into every piece (visit_date, photo
+ * EXIF, honorable mentions, the honest critique).
+ */
+
+import TrustPageLayout from '../layouts/TrustPageLayout.astro';
+import {
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+} from '../lib/schema';
+
+const publishedDate = new Date('2026-05-14');
+const lastUpdated = new Date('2026-05-14');
+
+const title = 'Methodology — bhamranked';
+const description =
+  'How a visit happens, how the ranking gets assembled, and what each trust signal on a bhamranked piece means.';
+
+const schemaBlocks = [
+  buildArticleSchema({
+    title,
+    description,
+    slug: '/methodology',
+    published: publishedDate,
+    modified: lastUpdated,
+    type: 'Article',
+  }),
+  buildBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Methodology', url: '/methodology' },
+  ]),
+];
+---
+
+<TrustPageLayout
+  title={title}
+  description={description}
+  kicker="Methodology"
+  dek="The longer version of how bhamranked pieces get made. What a visit looks like, how the ranking is assembled, and what the trust signals on every piece actually mean."
+  lastUpdated={lastUpdated}
+  schemaBlocks={schemaBlocks}
+>
+  <section class="section">
+    <h2>How a visit happens</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: 200-300 words]</span>
+      Walk through what you actually do when you visit a spot. Solo or with
+      friends? How do you take notes (phone, notebook, after the fact)? Do you
+      photograph the food on site, with what device, do you keep EXIF on so
+      timestamps are verifiable? What do you order, and how do you decide
+      between an obvious dish and a deeper-cut menu item? How long do you sit?
+      Do you talk to staff? Do you pay attention to the room, the music, the
+      bathroom?
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>How the ranking gets assembled</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: 150-250 words]</span>
+      The workflow from raw notes to a published piece. How do visits across
+      several months condense into one ordered list? How do you decide which
+      spots make the cut versus the honorable-mentions floor? Mention that AI
+      assistance is used for research and structure only, not for first-person
+      content or invented visit details. Anything you want a reader to know
+      about the gap between "I went there and ate" and "this piece is live."
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>What the trust signals mean</h2>
+    <p>
+      Every piece on bhamranked carries a fixed set of signals so a reader can
+      verify what they're looking at without taking anything on faith.
+    </p>
+
+    <h3>The no-paid-placement pill</h3>
+    <p>
+      At the top of every piece, above the headline. The same statement
+      appears verbatim on every piece because it's the same rule on every
+      piece. If you ever see a piece without it, that piece is broken.
+    </p>
+
+    <h3>The visit date range</h3>
+    <p>
+      Listicle pages show the date range of the visits that produced the
+      ranking. Feature pages show one or more visit dates for the spot in
+      question. These dates are the dates of actual visits, not the date the
+      piece was published or last edited.
+    </p>
+
+    <h3>The last-verified date</h3>
+    <p>
+      Separate from the visit dates. Last-verified is when the piece was
+      checked against current reality. If a business has changed hours, moved,
+      or closed, the piece gets updated and the last-verified date advances.
+      When last-verified is more than 6 months old, a revisit happens before
+      that date updates.
+    </p>
+
+    <h3>The honest critique</h3>
+    <p>
+      Every spot in every piece has a labeled "honest critique" section. No
+      place is perfect, and pretending otherwise would defeat the point of
+      this site. The critique is the thing the editor would warn a friend
+      about before recommending the spot.
+    </p>
+
+    <h3>The honorable mentions</h3>
+    <p>
+      Spots that were visited but didn't make the ranked list. Including them
+      shows the work: this is the set of places that were considered, not just
+      the set that won. If a place you love isn't here at all, it's either
+      because we haven't visited yet (write in) or because it didn't clear the
+      bar.
+    </p>
+
+    <h3>The photo metadata</h3>
+    <p>
+      Hero photos are shot on site. Where available, the photo metadata pill
+      shows the visit timestamp from the original file. Stock photography is
+      never used.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>What's coming</h2>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED: roadmap teaser]</span>
+      A short note on where bhamranked is going. Food and drink is the start.
+      Services categories (home, personal, retail) come later in 2026 once the
+      food vertical has earned its trust. Anything else you want to flag for a
+      reader who's wondering whether this is a one-piece project or something
+      ongoing.
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="cta-card">
+      <h3>Questions about a specific piece?</h3>
+      <p>
+        Corrections, factual errors, and ownership changes go to the editorial
+        contact lane. Businesses asking to be considered for a visit have
+        their own lane. The contact page keeps them separate.
+      </p>
+      <a href="/contact" class="cta-link">Contact bhamranked &rarr;</a>
+    </div>
+  </section>
+</TrustPageLayout>
