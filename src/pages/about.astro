@@ -2,15 +2,23 @@
 /**
  * /about — Owen's author bio page.
  *
- * Drafted from seed facts (decade in Bellingham, the portrait, Owen's
- * own phrasings from chat) and run through /humanizer. Owen edits to
- * taste. The Person JSON-LD references the sameAs URLs in
- * src/lib/schema.ts — keep that array in sync with the visible
- * "Receipts" data list below.
+ * Bypasses TrustPageLayout to use a custom asymmetric grid. Other trust
+ * pages stay long-form-prose; about is the magazine-spread one.
+ *
+ * Layout zones:
+ *   1. Hero (full-width title + dek)
+ *   2. Intro split — photo 5/12, bio 7/12
+ *   3. Why? — centered narrow prose column (long-form rhythm)
+ *   4. Pitch split — body 2/3, pull-callout 1/3
+ *   5. Bottom pair — When I'm not eating 1/2, Receipts 1/2
+ *   6. Contact CTA
  */
 
 import { Image } from 'astro:assets';
-import TrustPageLayout from '../layouts/TrustPageLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import Footer from '../components/Footer.astro';
+import SchemaLD from '../components/SchemaLD.astro';
 import {
   buildPersonSchema,
   buildBreadcrumbSchema,
@@ -30,122 +38,425 @@ const schemaBlocks = [
 ];
 ---
 
-<TrustPageLayout
-  title={title}
-  headline="About Owen"
-  description={description}
-  kicker="Who ranked these"
-  dek="Hamster... Original thoughts about my favorite local places."
-  schemaBlocks={schemaBlocks}
->
-  <section class="section portrait-section">
-    <Image
-      src={portraitImage}
-      alt="Owen, holding a brown trout at sunset on a river, somewhere drier than Bellingham."
-      widths={[600, 1000, 1600]}
-      sizes="(max-width: 800px) 100vw, 720px"
-      format="avif"
-      loading="eager"
-      class="portrait"
-    />
-  </section>
+<BaseLayout title={title} description={description}>
+  <Masthead />
 
-  <section class="section">
-    <h2>Hi, I'm Owen</h2>
-    <p>
-      I'm Owen. I've been a Bellinghamster for ten years. bhamranked is
-      where I write down what's worth your time in this town and what
-      isn't.
-    </p>
-  </section>
+  <main class="about-page">
 
-  <section class="section">
-    <h2>Why?</h2>
-    <p>
-      Family visits. Friends pass through on their way between
-      Seattle and Vancouver. Every time, the same question: where
-      do we eat?
-    </p>
-    <p>
-      After ten years the shortlist is long. The brunch I take my
-      family to isn't where I send friends who are passing through.
-      The dinner I save for special occasions is its own list. So is
-      the breakfast I default to when I've got nothing to prove. The
-      list keeps growing.
-    </p>
-    <p>
-      bhamranked is the list. Finally written down so I don't have to
-      text it to someone every couple of months.
-    </p>
-  </section>
+    <header class="hero">
+      <div class="kicker">Who ranked these</div>
+      <h1 class="hero-headline">About Owen</h1>
+      <p class="hero-dek">Hamster... Original thoughts about my favorite local places.</p>
+    </header>
 
-  <section class="section">
-    <h2>The pitch</h2>
-    <p>
-      bhamranked is a Bellingham directory I write myself. Every place on
-      it is somewhere I've gone in person, with photos I took. No business
-      pays to be on the list. No meal has been comped. If that ever
-      changes, you'll see it on this site before you see anything else.
-    </p>
-    <p>
-      The reason this exists: there are a hundred "best of Bellingham"
-      lists out there. Most are written by people who've never been to
-      Bellingham. They rank well on Google. They're rarely right.
-    </p>
-  </section>
+    <section class="intro-split">
+      <div class="intro-photo">
+        <Image
+          src={portraitImage}
+          alt="Owen, holding a brown trout at sunset on a river, somewhere drier than Bellingham."
+          widths={[400, 600, 900]}
+          sizes="(max-width: 800px) 100vw, 480px"
+          format="avif"
+          loading="eager"
+          class="portrait"
+        />
+      </div>
+      <div class="intro-bio">
+        <h2>Hi, I'm Owen</h2>
+        <p>
+          I've been a Bellinghamster for ten years. bhamranked is where I
+          write down what's worth your time in this town and what isn't.
+        </p>
+      </div>
+    </section>
 
-  <section class="section">
-    <h2>When I'm not eating</h2>
-    <p>
-      When I'm not eating somewhere in town, I'm usually somewhere
-      outside it. Ten years in and I still want to be here.
-    </p>
-  </section>
+    <section class="full-narrow">
+      <h2>Why?</h2>
+      <div class="narrow-prose">
+        <p>
+          Family visits. Friends pass through on their way between
+          Seattle and Vancouver. Every time, the same question: where
+          do we eat?
+        </p>
+        <p>
+          After ten years the shortlist is long. The brunch I take my
+          family to isn't where I send friends who are passing through.
+          The dinner I save for special occasions is its own list. So
+          is the breakfast I default to when I've got nothing to prove.
+          The list keeps growing.
+        </p>
+        <p>
+          bhamranked is the list. Finally written down so I don't have
+          to text it to someone every couple of months.
+        </p>
+      </div>
+    </section>
 
-  <section class="section">
-    <h2>Receipts</h2>
-    <dl class="data-list">
-      <dt>LinkedIn</dt>
-      <dd>
-        <a href="https://www.linkedin.com/in/owen-kurth-7647b9266/" rel="me noopener">
-          linkedin.com/in/owen-kurth
-        </a>
-      </dd>
-      <dt>Instagram</dt>
-      <dd>
-        <a href="https://www.instagram.com/owenkurth" rel="me noopener">
-          instagram.com/owenkurth
-        </a>
-      </dd>
-      <dt>Personal site</dt>
-      <dd>
-        <a href="https://owenkurth.com" rel="me noopener">owenkurth.com</a>
-      </dd>
-    </dl>
-  </section>
+    <section class="pitch-split">
+      <div class="pitch-body">
+        <h2>The pitch</h2>
+        <p>
+          bhamranked is a Bellingham directory I write myself. Every
+          place on it is somewhere I've gone in person, with photos I
+          took. No business pays to be on the list. No meal has been
+          comped. If that ever changes, you'll see it on this site
+          before you see anything else.
+        </p>
+      </div>
+      <aside class="pitch-pull">
+        <p class="pull-mark">A hundred</p>
+        <p class="pull-body">
+          "best of Bellingham" lists out there. Most are written by
+          people who've never been to Bellingham. They rank well on
+          Google. They're rarely right.
+        </p>
+      </aside>
+    </section>
 
-  <section class="section">
-    <div class="cta-card">
-      <h3>Want to get in touch?</h3>
-      <p>
-        One inbox for everything: corrections, businesses asking to be
-        considered, anything else.
-      </p>
-      <a href="/contact" class="cta-link">Contact bhamranked &rarr;</a>
-    </div>
-  </section>
-</TrustPageLayout>
+    <section class="bottom-pair">
+      <div class="pair-cell">
+        <h2>When I'm not eating</h2>
+        <p>
+          When I'm not eating somewhere in town, I'm usually somewhere
+          outside it. Ten years in and I still want to be here.
+        </p>
+      </div>
+      <div class="pair-cell pair-receipts">
+        <h2>Receipts</h2>
+        <dl class="receipts-list">
+          <dt>LinkedIn</dt>
+          <dd>
+            <a href="https://www.linkedin.com/in/owen-kurth-7647b9266/" rel="me noopener">
+              linkedin.com/in/owen-kurth
+            </a>
+          </dd>
+          <dt>Instagram</dt>
+          <dd>
+            <a href="https://www.instagram.com/owenkurth" rel="me noopener">
+              instagram.com/owenkurth
+            </a>
+          </dd>
+          <dt>Site</dt>
+          <dd>
+            <a href="https://owenkurth.com" rel="me noopener">owenkurth.com</a>
+          </dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="cta-row">
+      <div class="cta-card">
+        <h3>Want to get in touch?</h3>
+        <p>
+          One inbox for everything: corrections, businesses asking to be
+          considered, anything else.
+        </p>
+        <a href="/contact" class="cta-link">Contact bhamranked &rarr;</a>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+
+  <SchemaLD blocks={schemaBlocks} />
+</BaseLayout>
 
 <style>
-  .portrait-section {
-    margin-bottom: 3rem;
+  .about-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 4rem;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+  .kicker::before {
+    content: "";
+    width: 2.25rem;
+    height: 1px;
+    background: var(--color-accent);
+  }
+  .hero-headline {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 400;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0 0 1rem;
+    color: var(--color-text-primary);
+  }
+  .hero-dek {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50, "WONK" 0, "opsz" 18;
+    font-style: italic;
+    font-size: 1.375rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  /* ============ INTRO SPLIT: photo + bio ============ */
+  .intro-split {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 4rem;
+    align-items: start;
+    padding-bottom: 5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 5rem;
+  }
+  .intro-photo {
+    position: relative;
   }
   .portrait {
     width: 100%;
     display: block;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
-    object-position: center 38%;
+    object-position: center 30%;
     border-radius: 2px;
+  }
+  .intro-bio {
+    padding-top: 0.5rem;
+  }
+  .intro-bio h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 2.5rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
+  }
+  .intro-bio p {
+    font-size: 1.25rem;
+    line-height: 1.55;
+    color: var(--color-text-primary);
+    max-width: 38ch;
+  }
+
+  /* ============ FULL NARROW: Why? section ============ */
+  .full-narrow {
+    padding-bottom: 5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 5rem;
+  }
+  .full-narrow h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    margin: 0 0 2rem;
+  }
+  .narrow-prose {
+    max-width: 62ch;
+    margin: 0 auto;
+  }
+  .narrow-prose p {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin: 0 0 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .narrow-prose p:last-child {
+    margin-bottom: 0;
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 18;
+    font-style: italic;
+    font-size: 1.375rem;
+    line-height: 1.4;
+    color: var(--color-accent-verdict);
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--color-accent-verdict);
+    margin-top: 2rem;
+  }
+
+  /* ============ PITCH SPLIT: body + pullquote ============ */
+  .pitch-split {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    padding-bottom: 5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 5rem;
+  }
+  .pitch-body h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 1.5rem;
+  }
+  .pitch-body p {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-text-primary);
+    max-width: 55ch;
+    margin: 0;
+  }
+  .pitch-pull {
+    background: var(--color-bg-elevated);
+    padding: 2.25rem 2rem;
+    border-radius: 2px;
+    border-top: 3px solid var(--color-accent);
+    position: relative;
+  }
+  .pull-mark {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem;
+  }
+  .pull-body {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  /* ============ BOTTOM PAIR ============ */
+  .bottom-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 3rem;
+  }
+  .pair-cell h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.875rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.25rem;
+  }
+  .pair-cell p {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    margin: 0;
+    max-width: 42ch;
+  }
+  .receipts-list {
+    margin: 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.625rem 1.25rem;
+    align-items: baseline;
+  }
+  .receipts-list dt {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .receipts-list dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+  .receipts-list a {
+    color: var(--color-text-primary);
+    border: none;
+    border-bottom: 1px solid transparent;
+  }
+  .receipts-list a:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+
+  /* ============ CTA ============ */
+  .cta-row {
+    padding-top: 0;
+  }
+  .cta-card {
+    background: var(--color-bg-elevated);
+    padding: 2rem 2.25rem;
+    max-width: 620px;
+  }
+  .cta-card h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.375rem;
+    line-height: 1.1;
+    margin: 0 0 0.625rem;
+  }
+  .cta-card p {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+    max-width: 50ch;
+  }
+  .cta-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 2px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .intro-split,
+    .pitch-split,
+    .bottom-pair {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding-bottom: 3.5rem;
+      margin-bottom: 3.5rem;
+    }
+    .portrait {
+      aspect-ratio: 4 / 3;
+      max-width: 100%;
+    }
+    .narrow-prose {
+      margin: 0;
+    }
+    .narrow-prose p:last-child {
+      margin-top: 1.5rem;
+    }
+    .hero {
+      padding: 2.5rem 0 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .pitch-pull {
+      padding: 1.75rem 1.5rem;
+    }
   }
 </style>
