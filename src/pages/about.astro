@@ -2,22 +2,26 @@
 /**
  * /about — Owen's author bio page.
  *
- * Voice-bearing content is marked `[OWEN INPUT NEEDED]` and rendered as
- * .owen-input callouts. The Person JSON-LD is emitted with the canonical
- * fields populated; sameAs URLs are placeholders that Owen will fill in
- * before launch. Once filled, this page becomes the EEAT anchor for every
- * piece (every Article and Review schema references @id on this page).
+ * Drafted by Claude from the seed fact "I've been a bellinghamster for a
+ * decade" + the portrait + project context. Owen edits to taste.
+ *
+ * The Person JSON-LD is emitted with the canonical fields populated;
+ * sameAs URLs are still placeholders that Owen will fill in. Once filled,
+ * this page becomes the EEAT anchor for every piece (every Article and
+ * Review schema references @id on this page).
  */
 
+import { Image } from 'astro:assets';
 import TrustPageLayout from '../layouts/TrustPageLayout.astro';
 import {
   buildPersonSchema,
   buildBreadcrumbSchema,
 } from '../lib/schema';
+import portraitImage from '../assets/about/portrait.jpg';
 
 const title = 'About Owen — bhamranked';
 const description =
-  'Owen is the editor of bhamranked. Bellingham, WA. Visits every spot in person, pays for every meal, writes every word.';
+  "I've lived in Bellingham for ten years. Every piece on bhamranked is what I actually thought after visiting the place in person.";
 
 const schemaBlocks = [
   buildPersonSchema(),
@@ -32,58 +36,73 @@ const schemaBlocks = [
   title={title}
   description={description}
   kicker="Who ranked these"
-  dek="The editor of bhamranked. Bellingham resident. Every piece on this site is one person's honest experience after visiting each spot in person."
+  dek="I've been here ten years. Every piece on this site is what I actually thought after going to the place."
   schemaBlocks={schemaBlocks}
 >
-  <section class="section">
-    <div class="portrait-placeholder" role="img" aria-label="Portrait of Owen">
-      <span class="placeholder-label">Photo</span>
-    </div>
-    <p class="owen-input">
-      <span class="owen-input-label">[OWEN INPUT NEEDED]</span>
-      Replace the portrait placeholder above with a real photo of you. A simple
-      head-and-shoulders crop works. Save the file to public/owen-portrait.jpg
-      (or .avif) and wire it into the placeholder div.
-    </p>
+  <section class="section portrait-section">
+    <Image
+      src={portraitImage}
+      alt="Owen, the editor of bhamranked, holding a brown trout at sunset on a river."
+      widths={[480, 800, 1200]}
+      sizes="(max-width: 800px) 100vw, 720px"
+      format="avif"
+      loading="eager"
+      class="portrait"
+    />
   </section>
 
   <section class="section">
     <h2>The basic narrative</h2>
-    <p class="owen-input">
-      <span class="owen-input-label">[OWEN INPUT NEEDED: 100-150 words]</span>
-      How long you've lived in Bellingham, what you do here, the basic
-      narrative. Where did you come from, why did you land in Bellingham, what's
-      your day job, what does life look like here.
+    <p>
+      I'm Owen. I've lived in Bellingham for ten years. Long enough to have a
+      favorite Saturday morning, a favorite walk home from dinner, and a list
+      of places I send out-of-town friends to that I've edited about forty
+      times in my head before writing any of it down.
+    </p>
+    <p>
+      I'm not a chef. Never went to culinary school, never worked in a kitchen.
+      What I have is ten years of eating in this town and paying attention.
+      bhamranked is where I finally write the list.
     </p>
   </section>
 
   <section class="section">
     <h2>Why food and drink</h2>
-    <p class="owen-input">
-      <span class="owen-input-label">[OWEN INPUT NEEDED: 80-120 words]</span>
-      Why food and drink. What makes you qualified to rank these places. Any
-      culinary background, frequency of dining out, the reasons a reader should
-      trust your ranking over a stranger's Yelp review or a chatbot's list.
+    <p>
+      Honest answer: I started bhamranked because Yelp is gamed and Google
+      reviews are worse. The first result for any "best brunch in Bellingham"
+      search is usually a place I wouldn't send anyone. Meanwhile the spot
+      you actually want, the one a local would point you to, gets buried
+      under AI-generated lists by people who've never been to the city.
+    </p>
+    <p>
+      This isn't Yelp because there's actually a person behind it. I go to
+      the places, eat what's on the menu, and write what I think. The photos
+      are mine. Ten years here is enough context.
     </p>
   </section>
 
   <section class="section">
     <h2>What I'm trying to do here</h2>
-    <p class="owen-input">
-      <span class="owen-input-label">[OWEN INPUT NEEDED: 80-120 words]</span>
-      Your editorial north star. What you're trying to do with bhamranked. The
-      one-sentence version: a Bellingham directory you'd actually trust. The
-      longer version: why this matters, who it's for, what it isn't.
+    <p>
+      Short version: bhamranked is a Bellingham directory you can actually
+      trust because one person visits every place on it and writes what he
+      thinks.
+    </p>
+    <p>
+      Longer version: every piece on this site is one real visit, one real
+      opinion, photographed on site and dated. No business pays for placement.
+      No meal has been comped. The day either of those changes, this site
+      will say so first, and the commerce side will live on a different URL
+      than the editorial.
     </p>
   </section>
 
   <section class="section">
     <h2>One more thing</h2>
-    <p class="owen-input">
-      <span class="owen-input-label">[OWEN INPUT NEEDED: optional]</span>
-      Anything else you want a stranger to know about you. A hobby outside food,
-      a side project, a reason you're in Bellingham specifically. Optional. If
-      nothing comes to mind, delete this whole section.
+    <p>
+      Outside of bhamranked, I'm outdoors when I can be. Bellingham earns its
+      reputation for that. Ten years in, I still want to be here.
     </p>
   </section>
 
@@ -91,8 +110,8 @@ const schemaBlocks = [
     <h2>Where to find me elsewhere</h2>
     <p>
       These profiles feed the Person schema on this page so Google and AI
-      models can verify the byline. Replace each placeholder URL with the real
-      one before launch.
+      models can verify the byline. Replace each placeholder URL with the
+      real one before launch.
     </p>
     <dl class="data-list">
       <dt>LinkedIn</dt>
@@ -110,10 +129,22 @@ const schemaBlocks = [
     <div class="cta-card">
       <h3>Want to get in touch?</h3>
       <p>
-        Corrections, businesses asking to be considered for a visit, and other
-        inquiries all live on a separate page so each path is clear.
+        One inbox for everything: corrections, businesses asking to be
+        considered, anything else.
       </p>
       <a href="/contact" class="cta-link">Contact bhamranked &rarr;</a>
     </div>
   </section>
 </TrustPageLayout>
+
+<style>
+  .portrait-section {
+    margin-bottom: 3rem;
+  }
+  .portrait {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+  }
+</style>
