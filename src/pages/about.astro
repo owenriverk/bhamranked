@@ -2,13 +2,11 @@
 /**
  * /about — Owen's author bio page.
  *
- * Drafted by Claude from the seed fact "I've been a bellinghamster for a
- * decade" + the portrait + project context. Owen edits to taste.
- *
- * The Person JSON-LD is emitted with the canonical fields populated;
- * sameAs URLs are still placeholders that Owen will fill in. Once filled,
- * this page becomes the EEAT anchor for every piece (every Article and
- * Review schema references @id on this page).
+ * Drafted from seed facts (decade in Bellingham, the portrait, Owen's
+ * own phrasings from chat) and run through /humanizer. Owen edits to
+ * taste. The Person JSON-LD references the sameAs URLs in
+ * src/lib/schema.ts — keep that array in sync with the visible
+ * "Receipts" data list below.
  */
 
 import { Image } from 'astro:assets';
@@ -36,15 +34,15 @@ const schemaBlocks = [
   title={title}
   description={description}
   kicker="Who ranked these"
-  dek="I've been here ten years. Every piece on this site is what I actually thought after going to the place."
+  dek="Ten years a Bellinghamster. Every piece on this site is what I actually thought after going to the place — not what an algorithm thinks I should have."
   schemaBlocks={schemaBlocks}
 >
   <section class="section portrait-section">
     <Image
       src={portraitImage}
-      alt="Owen, mid-turn through powder on Mt. Baker, with the home mountain rising in the background."
+      alt="Owen, holding a brown trout at sunset on a river — somewhere drier than Bellingham."
       widths={[600, 1000, 1600]}
-      sizes="(max-width: 800px) 100vw, 1100px"
+      sizes="(max-width: 800px) 100vw, 720px"
       format="avif"
       loading="eager"
       class="portrait"
@@ -52,76 +50,78 @@ const schemaBlocks = [
   </section>
 
   <section class="section">
-    <h2>The basic narrative</h2>
+    <h2>Hi, I'm Owen</h2>
     <p>
-      I'm Owen. Ten years a Bellinghamster. That's Mt. Baker behind me, the
-      one you see from town when the weather lifts. I've kept a list of
-      places I'd send my sister to in this town for most of those ten years,
-      and bhamranked is where I finally write it down.
+      Ten years a Bellinghamster, with zero culinary credentials and a list
+      of places I'd send my sister to that started editing itself in my head
+      around year three. bhamranked is where the list finally gets written
+      down.
     </p>
     <p>
       I'm not a chef. Never went to culinary school, never worked in a
-      kitchen. What I have is a decade of eating in this town and paying
-      attention.
+      kitchen. What I have is a decade of paying attention in this town,
+      which it turns out counts for more than the internet gives it credit
+      for.
     </p>
   </section>
 
   <section class="section">
-    <h2>Why food and drink</h2>
-    <p>
-      Honest answer: I started bhamranked because Yelp is gamed and Google
-      reviews are worse. The first result for any "best brunch in Bellingham"
-      search is usually a place I wouldn't send anyone. Meanwhile the spot
-      you actually want, the one a local would point you to, gets buried
-      under AI-generated lists by people who've never been to the city.
-    </p>
-    <p>
-      This isn't Yelp because there's actually a person behind it. I go to
-      the places, eat what's on the menu, and write what I think. The photos
-      are mine. Ten years here is enough context.
-    </p>
-  </section>
-
-  <section class="section">
-    <h2>What I'm trying to do here</h2>
+    <h2>The pitch</h2>
     <p>
       Short version: bhamranked is a Bellingham directory you can actually
       trust because one person visits every place on it and writes what he
-      thinks.
+      thinks. That person is me.
     </p>
     <p>
-      Longer version: every piece on this site is one real visit, one real
-      opinion, photographed on site and dated. No business pays for placement.
-      No meal has been comped. The day either of those changes, this site
-      will say so first, and the commerce side will live on a different URL
-      than the editorial.
+      Longer version: I started this because Yelp is gamed, Google reviews
+      are worse, and the first result for "best brunch in Bellingham" is
+      usually a place I wouldn't send anyone. Meanwhile the spot you actually
+      want gets buried under AI-generated lists by people who've never set
+      foot in the city.
+    </p>
+    <p>
+      Every piece is one real visit, one real opinion, photographed on site
+      and dated. The photos are mine. No business pays for placement. No
+      meal has been comped. The day either of those changes, this site will
+      say so first, and the commerce side will live on a different URL than
+      the editorial.
     </p>
   </section>
 
   <section class="section">
-    <h2>One more thing</h2>
+    <h2>When I'm not eating</h2>
     <p>
-      Outside of bhamranked, I'm outdoors when I can be. Bellingham earns its
-      reputation for that. Ten years in, I still want to be here.
+      Most weekends in this town involve me eating somewhere I'm taking
+      notes about. The other ones I'm outside doing something else,
+      occasionally with a fish involved. Ten years in, I still want to be
+      here.
     </p>
   </section>
 
   <section class="section">
-    <h2>Where to find me elsewhere</h2>
+    <h2>Receipts</h2>
     <p>
-      These profiles feed the Person schema on this page so Google and AI
-      models can verify the byline. Replace each placeholder URL with the
-      real one before launch.
+      These profiles feed the Person schema on this page, which is how
+      Google and AI search confirm a real human is behind the byline and
+      not a content farm with a thesaurus. Receipts:
     </p>
     <dl class="data-list">
       <dt>LinkedIn</dt>
-      <dd>[OWEN INPUT NEEDED: actual LinkedIn URL]</dd>
-      <dt>Twitter / X</dt>
-      <dd>[OWEN INPUT NEEDED: actual Twitter URL]</dd>
+      <dd>
+        <a href="https://www.linkedin.com/in/owen-kurth-7647b9266/" rel="me noopener">
+          linkedin.com/in/owen-kurth
+        </a>
+      </dd>
       <dt>Instagram</dt>
-      <dd>[OWEN INPUT NEEDED: actual Instagram URL]</dd>
+      <dd>
+        <a href="https://www.instagram.com/owenkurth" rel="me noopener">
+          instagram.com/owenkurth
+        </a>
+      </dd>
       <dt>Personal site</dt>
-      <dd>[OWEN INPUT NEEDED: actual personal site URL]</dd>
+      <dd>
+        <a href="https://owenkurth.com" rel="me noopener">owenkurth.com</a>
+      </dd>
     </dl>
   </section>
 
@@ -143,8 +143,10 @@ const schemaBlocks = [
   }
   .portrait {
     width: 100%;
-    height: auto;
     display: block;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center 38%;
     border-radius: 2px;
   }
 </style>

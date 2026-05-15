@@ -33,7 +33,9 @@ export function buildPersonSchema(): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': 'Person',
     '@id': AUTHOR_PERSON_ID,
-    name: 'Owen',
+    name: 'Owen Kurth',
+    givenName: 'Owen',
+    familyName: 'Kurth',
     url: `${SITE_URL}/about`,
     description:
       'Editor of bhamranked. Bellingham, WA. Visits every spot in person, pays for every meal.',
@@ -43,11 +45,14 @@ export function buildPersonSchema(): Record<string, unknown> {
       'Editorial reviews',
       'Local businesses',
     ],
-    // [OWEN INPUT NEEDED] — populate sameAs with verified external profile
-    // URLs (LinkedIn, Twitter/X, Instagram, personal site). These are the
-    // single strongest "real person" signal Google's quality raters use
-    // when assessing E-E-A-T. Empty array is valid schema but suboptimal.
-    sameAs: [],
+    // Verified external profiles. Mirrors the visible list on /about so
+    // the schema and the page agree on the same identity. These are
+    // Google's strongest "real person" signal for E-E-A-T.
+    sameAs: [
+      'https://www.linkedin.com/in/owen-kurth-7647b9266/',
+      'https://www.instagram.com/owenkurth',
+      'https://owenkurth.com',
+    ],
   };
 }
 
