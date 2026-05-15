@@ -1,24 +1,22 @@
 ---
 /**
- * /contact — three clearly labeled inquiry paths.
+ * /contact — one inbox, three honest positions.
  *
- *   1. Editorial — corrections, factual errors, questions about a piece
- *   2. Consider for review — businesses asking to be visited
- *   3. Advertising — explicit clean-lanes statement (not currently offered)
- *
- * The page is safe to draft because the lane definitions are project-level
- * positioning. Owen confirms or changes the placeholder email addresses
- * before launch.
+ * Editorial corrections, business inquiries, and the advertising
+ * clean-lanes statement all live here, but everything routes to a
+ * single address (owen@bhamranked.com) so messages can't get lost in
+ * a maze of dedicated inboxes.
  */
 
 import TrustPageLayout from '../layouts/TrustPageLayout.astro';
 import { buildBreadcrumbSchema } from '../lib/schema';
 
 const SITE_URL = 'https://bhamranked.com';
+const CONTACT_EMAIL = 'owen@bhamranked.com';
 
 const title = 'Contact bhamranked';
 const description =
-  'Three contact paths for bhamranked: editorial corrections, businesses asking to be considered for review, and advertising inquiries.';
+  'One inbox for bhamranked: editorial corrections, business inquiries, and the advertising clean-lanes answer.';
 
 const contactPage: Record<string, unknown> = {
   '@context': 'https://schema.org',
@@ -35,14 +33,7 @@ const contactPage: Record<string, unknown> = {
       {
         '@type': 'ContactPoint',
         contactType: 'editorial',
-        email: 'corrections@bhamranked.com',
-        areaServed: 'US-WA',
-        availableLanguage: ['English'],
-      },
-      {
-        '@type': 'ContactPoint',
-        contactType: 'business inquiries',
-        email: 'consider@bhamranked.com',
+        email: CONTACT_EMAIL,
         areaServed: 'US-WA',
         availableLanguage: ['English'],
       },
@@ -63,65 +54,55 @@ const schemaBlocks = [
   title={title}
   description={description}
   kicker="Contact"
-  dek="Three separate paths so the right message reaches the right inbox. Editorial inquiries stay separate from business inquiries, and the advertising lane has its own honest answer."
+  dek="One inbox. Read it most days."
   schemaBlocks={schemaBlocks}
 >
   <section class="section">
-    <div class="contact-lane">
-      <span class="lane-label">01 · Editorial inquiries</span>
-      <h3>Corrections and questions about a piece</h3>
-      <p>
-        If you spotted an error of fact in a published piece (a wrong address,
-        wrong hours, an ownership change we missed) or you have a question
-        about how a ranking was made, write to the editorial inbox. We aim to
-        respond within 48 hours and post dated corrections on the affected
-        piece when the fix is non-trivial.
-      </p>
-      <a class="lane-email" href="mailto:corrections@bhamranked.com">
-        corrections@bhamranked.com
-      </a>
-      <p class="owen-input">
-        <span class="owen-input-label">[OWEN INPUT NEEDED]</span>
-        Confirm or change this email address. If the inbox should be something
-        like editor@bhamranked.com, hello@bhamranked.com, or owen@bhamranked.com,
-        update it in both places (the visible mailto and the ContactPoint
-        JSON-LD).
-      </p>
-    </div>
+    <p class="lead">
+      Everything goes to the same place:
+    </p>
+    <p class="email-row">
+      <a class="lane-email" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+    </p>
+    <p class="owen-input">
+      <span class="owen-input-label">[OWEN INPUT NEEDED]</span>
+      Confirm this email address (or change it). Update the
+      <code>CONTACT_EMAIL</code> constant at the top of this file and the
+      ContactPoint email in the JSON-LD will follow automatically. The same
+      address is referenced in the editorial-policy corrections paragraph;
+      change it there too if you rename it.
+    </p>
+  </section>
 
-    <div class="contact-lane">
-      <span class="lane-label">02 · Businesses asking to be considered for review</span>
-      <h3>You'd like us to visit</h3>
-      <p>
-        Visits happen on our timeline, not the business's. We never accept
-        comped meals or payment for placement. If you'd like to be considered,
-        send your address, hours, and one sentence on what you think makes
-        you stand apart. We'll add you to the list of places to visit. There
-        is no fee, no guaranteed coverage, and no editorial trade. If we
-        visit and the piece doesn't favor you, that piece still publishes.
-      </p>
-      <a class="lane-email" href="mailto:consider@bhamranked.com">
-        consider@bhamranked.com
-      </a>
-      <p class="owen-input">
-        <span class="owen-input-label">[OWEN INPUT NEEDED]</span>
-        Confirm or change this email address. Same note as above on the
-        ContactPoint JSON-LD if you rename it.
-      </p>
-    </div>
+  <section class="section">
+    <h2>What to write about</h2>
+    <ul>
+      <li>
+        <strong>Corrections.</strong> Wrong address, wrong hours, an ownership
+        change a piece missed. Replies within 48 hours; non-trivial
+        corrections get a dated note on the affected piece.
+      </li>
+      <li>
+        <strong>Businesses asking to be considered.</strong> Send your
+        address, hours, and one sentence on what you think makes you stand
+        apart. No fee, no guaranteed coverage, no editorial trade. Visits
+        happen on bhamranked's timeline.
+      </li>
+      <li>
+        <strong>Anything else.</strong> A thoughtful pitch, a tip, a question
+        about how a piece got made.
+      </li>
+    </ul>
+  </section>
 
-    <div class="contact-lane">
-      <span class="lane-label">03 · Advertising and featured placement</span>
-      <h3>The clean-lanes answer</h3>
-      <p>
-        bhamranked does not currently sell featured placement or advertising.
-        If that ever changes, this page will say so clearly and the commerce
-        side will live on a separate URL from editorial. Until then, please
-        do not send pitches; they will not be read and they will not get a
-        response.
-      </p>
-      <span class="lane-no-email">No inbox by design.</span>
-    </div>
+  <section class="section">
+    <h2>One honest answer up front</h2>
+    <p>
+      bhamranked does not sell featured placement or advertising. Pitches
+      about that don't get a response. If that ever changes, this page will
+      say so and the commerce side will live on a separate URL from the
+      editorial side.
+    </p>
   </section>
 
   <section class="section">
@@ -138,8 +119,27 @@ const schemaBlocks = [
       <dd><a href="/#newsletter">Subscribe on the homepage</a></dd>
       <dt>Policy</dt>
       <dd><a href="/editorial-policy">/editorial-policy</a></dd>
-      <dt>Methodology</dt>
-      <dd><a href="/methodology">/methodology</a></dd>
     </dl>
   </section>
 </TrustPageLayout>
+
+<style>
+  .lead {
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .email-row {
+    margin-bottom: 1.5rem;
+  }
+  .lane-email {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: var(--color-accent);
+    letter-spacing: -0.02em;
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 0.25rem;
+  }
+</style>

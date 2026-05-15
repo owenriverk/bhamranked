@@ -41,7 +41,11 @@ const ogImageUrl = ogImage ?? `${siteUrl}/og-default.png`;
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Robots -->
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {/* noindex, follow: the page is crawlable (AI search can read it) but
+        Google won't index it, AND outbound links from it still pass
+        endorsement back to the rest of the site. Right default for pages
+        we want findable-but-not-promoted (e.g. /methodology). */}
+    {noindex && <meta name="robots" content="noindex, follow" />}
 
     <!-- Open Graph -->
     <meta property="og:type" content="article" />

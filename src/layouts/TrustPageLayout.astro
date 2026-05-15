@@ -37,9 +37,12 @@ interface Props {
   canonical?: string;
   /** JSON-LD blocks to render at the end of the document. */
   schemaBlocks?: Record<string, unknown> | Record<string, unknown>[];
+  /** Emit <meta name="robots" content="noindex"> for pages we want crawlable
+   *  (so AI search can reach them) but not indexed in Google. */
+  noindex?: boolean;
 }
 
-const { title, description, kicker, dek, lastUpdated, canonical, schemaBlocks } = Astro.props;
+const { title, description, kicker, dek, lastUpdated, canonical, schemaBlocks, noindex } = Astro.props;
 
 function fmt(d: Date): string {
   const y = d.getFullYear();
@@ -49,7 +52,7 @@ function fmt(d: Date): string {
 }
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical}>
+<BaseLayout title={title} description={description} canonical={canonical} noindex={noindex}>
   <Masthead />
 
   <main class="container">

@@ -11,8 +11,12 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      // Filter out future-dated drafts at sitemap level too
-      filter: (page) => !page.includes('/drafts/'),
+      // Filter out future-dated drafts and the /methodology page.
+      // /methodology is intentionally crawlable but not indexed and not linked
+      // from the site — AI crawlers and curious humans can reach it directly,
+      // but it should not appear in search results or sitemap submissions.
+      filter: (page) =>
+        !page.includes('/drafts/') && !page.endsWith('/methodology'),
     }),
   ],
 
