@@ -1,0 +1,115 @@
+---
+/**
+ * Masthead — site header with wordmark, nav, theme toggle.
+ * Renders on every page. Theme toggle is inline JS, no framework.
+ */
+---
+
+<header class="masthead">
+  <a href="/" class="wordmark" aria-label="bhamranked home">
+    bhamranked<span class="dot">.</span>
+  </a>
+
+  <nav class="nav" aria-label="Primary navigation">
+    <a href="/food-and-drink">Food &amp; Drink</a>
+    <a href="/food-and-drink/brunch">Brunch</a>
+    <a href="/food-and-drink/coffee">Coffee</a>
+    <a href="/food-and-drink/breweries">Breweries</a>
+    <a href="/about">About</a>
+    <a href="/editorial-policy">Policy</a>
+  </nav>
+
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+    <span data-theme-label="light">Dark</span>
+    <span data-theme-label="dark" hidden>Light</span>
+  </button>
+</header>
+
+<script is:inline>
+  (() => {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+    const root = document.documentElement;
+    const sync = () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      toggle.querySelector('[data-theme-label="light"]').hidden = isDark;
+      toggle.querySelector('[data-theme-label="dark"]').hidden = !isDark;
+    };
+    sync();
+    toggle.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('bhamranked-theme', next); } catch (_) {}
+      sync();
+    });
+  })();
+</script>
+
+<style>
+  .masthead {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 2rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+    font-weight: 600;
+    font-size: 1.75rem;
+    letter-spacing: -0.03em;
+    color: var(--color-text-primary);
+    border: none;
+  }
+  .wordmark .dot { color: var(--color-accent); }
+
+  .nav {
+    display: flex;
+    gap: 1.75rem;
+    flex: 1;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .nav a {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.08s ease;
+  }
+  .nav a:hover { color: var(--color-text-primary); }
+
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.08s ease;
+  }
+  .theme-toggle:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-primary);
+  }
+
+  @media (max-width: 800px) {
+    .masthead { flex-wrap: wrap; padding: 1.5rem 1rem 1rem; }
+    .nav {
+      width: 100%;
+      justify-content: flex-start;
+      order: 3;
+      gap: 1rem;
+    }
+  }
+</style>

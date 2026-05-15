@@ -1,0 +1,81 @@
+---
+/**
+ * BaseLayout — the HTML shell for every page.
+ * Loads self-hosted fonts, theme init script (inline, blocks paint to avoid flash),
+ * SEO meta, OG + Twitter Card, canonical.
+ */
+
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/instrument-sans';
+import '@fontsource-variable/geist-mono';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const { title, description, canonical, ogImage, noindex = false } = Astro.props;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://bhamranked.com';
+const computedCanonical = `${siteUrl}${Astro.url.pathname}`.replace(/\/$/, '') || siteUrl;
+const canonicalUrl = canonical ?? computedCanonical;
+const ogImageUrl = ogImage ?? `${siteUrl}/og-default.png`;
+---
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Title + description -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Robots -->
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="bhamranked" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Theme init (inline, blocking — prevents FOUC on dark-mode load) -->
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('bhamranked-theme');
+          if (stored === 'dark' || stored === 'light') {
+            document.documentElement.setAttribute('data-theme', stored);
+          }
+        } catch (_) { /* localStorage unavailable, default light */ }
+      })();
+    </script>
+
+    <!-- RSS auto-discovery -->
+    <link rel="alternate" type="application/rss+xml" title="bhamranked" href="/feed.xml" />
+
+    <!-- Sitemap auto-discovery -->
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

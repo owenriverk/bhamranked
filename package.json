@@ -1,0 +1,40 @@
+{
+  "name": "bhamranked",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bellingham editorial food and drink directory. First-person reviews, no paid placement.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "prettier --write \"**/*.{astro,ts,tsx,js,jsx,json,md,mdx,css}\"",
+    "lint": "eslint . --ext .astro,.ts,.tsx,.js,.jsx",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/check": "^0.9.0",
+    "@astrojs/rss": "^4.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "@fontsource-variable/fraunces": "^5.0.0",
+    "@fontsource-variable/instrument-sans": "^5.0.0",
+    "@fontsource-variable/geist-mono": "^5.0.0",
+    "sharp": "^0.33.0",
+    "typescript": "^5.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prettier": "^3.3.0",
+    "prettier-plugin-astro": "^0.14.0",
+    "vitest": "^2.0.0",
+    "exifr": "^7.1.3",
+    "linkinator": "^6.1.0"
+  }
+}

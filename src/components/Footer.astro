@@ -1,0 +1,119 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="brand">
+      <div class="wordmark">bhamranked<span class="dot">.</span></div>
+      <p class="tag">First-person reviews of Bellingham, WA businesses. No paid placement, ever.</p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <div class="col">
+        <h3>Categories</h3>
+        <a href="/food-and-drink/brunch">Brunch</a>
+        <a href="/food-and-drink/coffee">Coffee</a>
+        <a href="/food-and-drink/breweries">Breweries</a>
+      </div>
+      <div class="col">
+        <h3>About</h3>
+        <a href="/about">About Owen</a>
+        <a href="/editorial-policy">Policy</a>
+        <a href="/methodology">Methodology</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="col">
+        <h3>Subscribe</h3>
+        <a href="/feed.xml">RSS feed</a>
+        <a href="#newsletter">Newsletter</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="meta">
+    <span>© {currentYear} bhamranked</span>
+    <span class="sep">·</span>
+    <span>Built with Astro</span>
+    <span class="sep">·</span>
+    <a href="https://github.com/owenriverk/bhamranked" rel="noopener">Source</a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    max-width: 1180px;
+    margin: 6rem auto 0;
+    padding: 4rem 2rem 2rem;
+    border-top: 1px solid var(--color-text-primary);
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
+    margin-bottom: 3rem;
+  }
+  .brand { max-width: 30ch; }
+  .wordmark {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+    font-weight: 600;
+    font-size: 1.75rem;
+    letter-spacing: -0.03em;
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
+  }
+  .wordmark .dot { color: var(--color-accent); }
+  .tag {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .col h3 {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+    font-weight: 400;
+  }
+  .col a {
+    display: block;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    border: none;
+    padding: 0.25rem 0;
+  }
+  .col a:hover { color: var(--color-accent); }
+
+  .meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+  .meta .sep { color: var(--color-border); }
+  .meta a {
+    color: var(--color-text-muted);
+    border: none;
+  }
+  .meta a:hover { color: var(--color-text-primary); }
+
+  @media (max-width: 800px) {
+    .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .footer-nav { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  }
+</style>
