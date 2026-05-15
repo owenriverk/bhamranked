@@ -21,11 +21,10 @@
 /bio                 /about              301
 /owen                /about              301
 
-# trailingSlash:'never' enforcement — collapse any accidental trailing-slash
-# variant. Cloudflare Pages already normalizes most cases but explicit rules
-# here help with bookmarked links from older revisions.
-/feed.xml/           /feed.xml          301
-/about/              /about              301
-/editorial-policy/   /editorial-policy   301
-/methodology/        /methodology        301
-/contact/            /contact            301
+# Trailing-slash handling: deliberately NOT redirecting directory routes
+# like /about/ → /about. Astro emits dist/about/index.html (directory
+# style), and Cloudflare Pages normalizes /about ↔ /about/index.html
+# automatically. Adding explicit /about/ → /about rules creates a redirect
+# loop (Pages internally resolves /about to /about/index.html, then our
+# rule fires on the slashed form). Trust Astro's trailingSlash:'never'
+# config + Pages' built-in directory handling — they cooperate fine.
