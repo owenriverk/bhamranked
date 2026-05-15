@@ -28,9 +28,15 @@ import Footer from '../components/Footer.astro';
 import SchemaLD from '../components/SchemaLD.astro';
 
 interface Props {
+  /** Used for <title> and <og:title>. Should include the site name
+   *  ("Page — bhamranked") for SEO. */
   title: string;
   description: string;
   kicker?: string;
+  /** Optional visible H1 override. If unset, uses `title`. Use this when
+   *  you want a tight on-page headline ("About Owen") that's different
+   *  from the SEO-rich browser-tab title ("About Owen — bhamranked"). */
+  headline?: string;
   dek?: string;
   lastUpdated?: Date | null;
   /** Optional canonical override; defaults to BaseLayout's computed URL. */
@@ -42,7 +48,8 @@ interface Props {
   noindex?: boolean;
 }
 
-const { title, description, kicker, dek, lastUpdated, canonical, schemaBlocks, noindex } = Astro.props;
+const { title, description, kicker, headline, dek, lastUpdated, canonical, schemaBlocks, noindex } = Astro.props;
+const visibleHeadline = headline ?? title;
 
 function fmt(d: Date): string {
   const y = d.getFullYear();
@@ -58,7 +65,7 @@ function fmt(d: Date): string {
   <main class="container">
     <header class="page-header">
       {kicker && <div class="kicker">{kicker}</div>}
-      <h1 class="headline">{title}</h1>
+      <h1 class="headline">{visibleHeadline}</h1>
       {dek && <p class="dek">{dek}</p>}
       {lastUpdated && (
         <p class="updated">
