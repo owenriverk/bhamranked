@@ -1,0 +1,31 @@
+# Cloudflare Pages redirects.
+# Syntax: <from> <to> <status>
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# Canonical feed paths
+/feed       /feed.xml          301
+/rss        /feed.xml          301
+/rss.xml    /feed.xml          301
+/atom       /feed.xml          301
+/atom.xml   /feed.xml          301
+
+# Canonical sitemap
+/sitemap            /sitemap-index.xml  301
+/sitemap.xml        /sitemap-index.xml  301
+
+# Common humans-might-type paths
+/policy              /editorial-policy   301
+/editorial           /editorial-policy   301
+/ethics              /editorial-policy   301
+/disclosure          /editorial-policy   301
+/bio                 /about              301
+/owen                /about              301
+
+# trailingSlash:'never' enforcement — collapse any accidental trailing-slash
+# variant. Cloudflare Pages already normalizes most cases but explicit rules
+# here help with bookmarked links from older revisions.
+/feed.xml/           /feed.xml          301
+/about/              /about              301
+/editorial-policy/   /editorial-policy   301
+/methodology/        /methodology        301
+/contact/            /contact            301

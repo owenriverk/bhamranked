@@ -2,9 +2,24 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Masthead from '../components/Masthead.astro';
 import Footer from '../components/Footer.astro';
+import SchemaLD from '../components/SchemaLD.astro';
+import {
+  buildOrganizationSchema,
+  buildWebsiteSchema,
+  buildPersonSchema,
+} from '../lib/schema';
 
 const title = 'bhamranked — first-person Bellingham restaurant reviews';
 const description = 'Ranked guides to the best restaurants, coffee, breweries, and businesses in Bellingham, WA. Visited in person. No paid placement, no comped meals, no sponsored content.';
+
+// Homepage emits Organization + WebSite + Person blocks. These are the
+// canonical author/publisher references that listicle/feature pages link
+// to via @id — emitting them once on / lets Google de-dupe across the site.
+const schemaBlocks = [
+  buildOrganizationSchema(),
+  buildWebsiteSchema(),
+  buildPersonSchema(),
+];
 ---
 
 <BaseLayout title={title} description={description}>
@@ -52,6 +67,8 @@ const description = 'Ranked guides to the best restaurants, coffee, breweries, a
   </main>
 
   <Footer />
+
+  <SchemaLD blocks={schemaBlocks} />
 </BaseLayout>
 
 <style>

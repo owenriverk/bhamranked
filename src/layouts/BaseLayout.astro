@@ -78,6 +78,36 @@ const ogImageUrl = ogImage ?? `${siteUrl}/og-default.png`;
 
     <!-- Sitemap auto-discovery -->
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    <!--
+      Search engine ownership verification.
+      Owen: after deploy + DNS propagation, claim the property in each
+      console below and paste the verification token here. The DNS-TXT
+      verification path is preferred where available (avoids an HTML
+      meta tag that lives forever); use these meta tags as a fallback.
+
+        Google Search Console:  https://search.google.com/search-console
+        Bing Webmaster Tools:    https://www.bing.com/webmasters
+    -->
+    <!-- <meta name="google-site-verification" content="OWEN-FILL-IN-GOOGLE-TOKEN" /> -->
+    <!-- <meta name="msvalidate.01" content="OWEN-FILL-IN-BING-TOKEN" /> -->
+
+    <!--
+      Cloudflare Web Analytics — zero cookies, no GDPR banner needed.
+      Owen: enable CF Web Analytics on the deployed Pages project, copy
+      the beacon "token" from the dashboard, and replace the placeholder
+      below. While the placeholder is in place the snippet is commented
+      out so it doesn't 404 in dev/staging.
+
+      Reference: https://developers.cloudflare.com/web-analytics/
+    -->
+    <!--
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "CF_BEACON_ID_REPLACE_AFTER_DEPLOY"}'
+    ></script>
+    -->
   </head>
   <body>
     <slot />

@@ -73,6 +73,9 @@ const data = entry.data;
 const publishedDate = data.published ?? new Date();
 const canonicalPath = `/${category}/${subCategory}/features/${data.slug}`;
 
+// Per-piece OG image. Generated at build time by src/pages/og/[slug].png.ts.
+const ogImagePath = `/og/feature__${data.slug}.png`;
+
 const categoryLabel = CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] ?? category;
 const subCategoryLabel = SUB_CATEGORY_LABELS[subCategory] ?? subCategory;
 
@@ -110,6 +113,7 @@ const schemaBlocks = [
     slug: canonicalPath,
     published: publishedDate,
     modified: data.last_verified,
+    image: ogImagePath,
   }),
   buildReviewSchema({
     spot: syntheticSpot,
@@ -122,7 +126,7 @@ const schemaBlocks = [
 ];
 ---
 
-<BaseLayout title={data.title} description={data.description} canonical={canonicalPath}>
+<BaseLayout title={data.title} description={data.description} canonical={canonicalPath} ogImage={ogImagePath}>
   <Masthead />
   <TrustStrip lastVerified={data.last_verified} />
 

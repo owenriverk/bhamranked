@@ -13,6 +13,7 @@
     "format": "prettier --write \"**/*.{astro,ts,tsx,js,jsx,json,md,mdx,css}\"",
     "lint": "eslint . --ext .astro,.ts,.tsx,.js,.jsx",
     "test": "vitest run",
+    "test:once": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {

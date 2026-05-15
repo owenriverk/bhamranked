@@ -43,9 +43,11 @@ export function buildPersonSchema(): Record<string, unknown> {
       'Editorial reviews',
       'Local businesses',
     ],
-    sameAs: [
-      // [OWEN INPUT NEEDED] external profile URLs (LinkedIn, Twitter, Instagram)
-    ],
+    // [OWEN INPUT NEEDED] — populate sameAs with verified external profile
+    // URLs (LinkedIn, Twitter/X, Instagram, personal site). These are the
+    // single strongest "real person" signal Google's quality raters use
+    // when assessing E-E-A-T. Empty array is valid schema but suboptimal.
+    sameAs: [],
   };
 }
 
@@ -82,11 +84,18 @@ interface ArticleArgs {
   published: Date;
   modified?: Date | null;
   type?: 'Article' | 'NewsArticle' | 'BlogPosting' | 'Review';
+  /** Image URL for the Article (Google Rich Results recommends 1200×630). */
+  image?: string;
 }
 
 export function buildArticleSchema(args: ArticleArgs): Record<string, unknown> {
   const url = `${SITE_URL}${args.slug.startsWith('/') ? args.slug : `/${args.slug}`}`;
   const mod = args.modified ?? args.published;
+  const imageUrl = args.image
+    ? args.image.startsWith('http')
+      ? args.image
+      : `${SITE_URL}${args.image}`
+    : `${SITE_URL}/og-default.png`;
   return {
     '@context': 'https://schema.org',
     '@type': args.type ?? 'Article',
@@ -98,6 +107,10 @@ export function buildArticleSchema(args: ArticleArgs): Record<string, unknown> {
     dateModified: mod.toISOString(),
     author: { '@id': AUTHOR_PERSON_ID },
     publisher: { '@id': PUBLISHER_ORG_ID },
+    // image is REQUIRED for Article rich-results eligibility. We always
+    // emit one — per-piece OG image when available, falling back to the
+    // sitewide default.
+    image: imageUrl,
   };
 }
 
@@ -107,6 +120,19 @@ interface LocalBusinessArgs {
   type?: string;
 }
 
+/*
+ * NOTE: `openingHours` should be in schema.org's ISO-ish format
+ * (`Mo-Fr 09:00-17:00`) for Google to parse it. The Spot.hours field is
+ * free-form ("Sat-Sun 9a-2p") because it doubles as on-page display copy.
+ * Emitting the free-form string as `openingHoursSpecification.description`
+ * keeps it visible without misleading Google's parser. If we later want
+ * machine-parseable hours, add a structured `hours_spec` field to
+ * SpotSchema in src/content/config.ts and convert here.
+ *
+ * NOTE: bhamranked doesn't carry lat/lon for spots yet. If Owen starts
+ * adding `geo` (latitude/longitude) to the SpotSchema, populate it here
+ * — Google Rich Results uses it for map-pin enhancement.
+ */
 export function buildLocalBusinessSchema(args: LocalBusinessArgs): Record<string, unknown> {
   const { spot } = args;
   return {
@@ -122,7 +148,12 @@ export function buildLocalBusinessSchema(args: LocalBusinessArgs): Record<string
       addressCountry: 'US',
     },
     priceRange: spot.price_tier,
-    openingHours: spot.hours,
+    // Free-form hours wrapped in a spec object — Google ignores the
+    // description but on-page rendering can read it back.
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      description: spot.hours,
+    },
   };
 }
 

@@ -59,6 +59,9 @@ const subCategoryLabel = SUB_CATEGORY_LABELS[subCategory] ?? subCategory;
 const publishedDate = data.published ?? new Date();
 const canonicalPath = `/${category}/${subCategory}/${data.slug}`;
 
+// Per-piece OG image. Generated at build time by src/pages/og/[slug].png.ts.
+const ogImagePath = `/og/listicle__${category}__${subCategory}__${data.slug}.png`;
+
 // Ranked rows excluding the hero (rank 01).
 const restOfList: Spot[] = [...data.ranked_spots]
   .sort((a, b) => a.rank - b.rank)
@@ -85,6 +88,7 @@ const schemaBlocks = [
     slug: canonicalPath,
     published: publishedDate,
     modified: data.last_verified,
+    image: ogImagePath,
   }),
   buildItemListSchema({
     name: data.title,
@@ -97,7 +101,7 @@ const schemaBlocks = [
 ];
 ---
 
-<BaseLayout title={data.title} description={data.description} canonical={canonicalPath}>
+<BaseLayout title={data.title} description={data.description} canonical={canonicalPath} ogImage={ogImagePath}>
   <Masthead />
   <TrustStrip visitRange={data.visit_date_range} lastVerified={data.last_verified} />
 

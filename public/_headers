@@ -1,0 +1,44 @@
+# Cloudflare Pages headers configuration.
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+# ─────────────────────────────────────────────────────────────────────
+# Security headers — apply to every response.
+# ─────────────────────────────────────────────────────────────────────
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  # CSP intentionally permissive on inline scripts because the theme-init
+  # script is inline and blocking-by-design (prevents FOUC). If the
+  # inline script is ever moved external, tighten this to:
+  #   script-src 'self' static.cloudflareinsights.com;
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com; font-src 'self' data:; connect-src 'self' static.cloudflareinsights.com cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://*.beehiiv.com
+
+# ─────────────────────────────────────────────────────────────────────
+# Long-cache for Astro-fingerprinted static assets.
+# Astro emits filenames like `/_astro/file.hash.js` — the hash means the
+# filename changes whenever content changes, so we can safely cache for a
+# year.
+# ─────────────────────────────────────────────────────────────────────
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Self-hosted fonts — same long-cache treatment.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Per-piece OG images — same long-cache (filename includes piece slug).
+/og/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ─────────────────────────────────────────────────────────────────────
+# Short cache + revalidate for HTML.
+# Pages Function output (e.g. /indexnow) is explicitly no-cache.
+# ─────────────────────────────────────────────────────────────────────
+/*.html
+  Cache-Control: public, max-age=300, s-maxage=600, stale-while-revalidate=86400
+
+/indexnow
+  Cache-Control: no-store

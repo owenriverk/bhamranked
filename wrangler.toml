@@ -1,0 +1,43 @@
+# Cloudflare Pages + Pages Functions configuration for bhamranked.com.
+#
+# `wrangler` reads this file when you run `wrangler pages dev` locally or
+# when you deploy via `wrangler pages deploy dist`. Cloudflare's UI also
+# picks up several values here (compatibility flags, KV bindings) when the
+# Pages project is linked to this repo.
+#
+# Owen-side actions (one-time, in the Cloudflare dashboard):
+#   1. Create Pages project named `bhamranked`. Link to the GitHub repo.
+#   2. Set Build command: npm run build
+#                  Output: dist
+#                  Node version: 22
+#   3. Create a KV namespace named `bhamranked-last-published` and bind
+#      it to this project as variable name `LAST_PUBLISHED` (Pages →
+#      Settings → Functions → KV namespace bindings).
+#   4. Set Production env var INDEXNOW_KEY to the 32-char hex you generate
+#      (see functions/indexnow.ts for the recipe).
+#   5. Set Production env var (optional) PUBLIC_HOST to bhamranked.com to
+#      override the host header in the IndexNow worker if you're testing
+#      behind a *.pages.dev preview URL.
+
+name = "bhamranked"
+compatibility_date = "2026-05-14"
+pages_build_output_dir = "dist"
+
+# Pages Functions live under ./functions/ by convention; no explicit
+# `functions` block is required for Pages projects, but documenting here
+# for future readers.
+#
+# Routes:
+#   /indexnow  → functions/indexnow.ts
+
+# KV namespace binding for the IndexNow worker. Owen creates the actual
+# namespace in CF dashboard (Workers → KV) and writes the resulting
+# namespace ID into the dashboard binding UI — wrangler.toml doesn't
+# need the ID for Pages Functions, only the binding variable name.
+#
+# Once the namespace exists you can flip USE_DIFF=true in
+# functions/indexnow.ts to switch from "submit all" to "submit delta".
+
+[[kv_namespaces]]
+binding = "LAST_PUBLISHED"
+# id = "FILL-IN-AFTER-CREATING-NAMESPACE"  # not required for Pages Functions

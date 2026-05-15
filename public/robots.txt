@@ -1,6 +1,14 @@
 # bhamranked.com — explicit allowlist for AI search engines.
 # Editorial sites that block AI crawlers forfeit AI Overview citations.
 # bhamranked's positioning depends on those citations.
+#
+# Methodology: noindex via <meta name="robots" content="noindex, follow">
+# on specific pages (currently /methodology) — NOT via Disallow here. We
+# want crawlers to READ those pages (for context and link equity); we
+# just don't want them in search results. robots.txt Disallow would
+# block reading; the noindex meta keeps the page crawlable but
+# un-indexed. Don't add Disallow rules here unless you actually want
+# to block crawling.
 
 User-agent: *
 Allow: /

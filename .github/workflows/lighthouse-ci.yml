@@ -1,0 +1,81 @@
+# Lighthouse + axe-core gating on every PR.
+#
+# Performance / Accessibility / Best Practices / SEO must each score >= 95
+# on the homepage and a sample piece path. Lighthouse's Accessibility
+# category runs axe-core under the hood, so "0 axe violations" is enforced
+# through the same gate.
+#
+# If you want an explicit standalone axe sweep (e.g. for forms / dynamic
+# state that Lighthouse may not exercise), uncomment the @axe-core/cli
+# step at the bottom. Adding @axe-core/cli to devDependencies is the only
+# other change needed.
+name: lighthouse-ci
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Start static server
+        # `npx serve` (from the `serve` npm package) pins on port 3000 by
+        # default. Background it; the Lighthouse step polls for readiness.
+        run: npx --yes serve@latest dist -p 3000 &
+
+      - name: Wait for server
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:3000/ > /dev/null; then
+              echo "Server up after $i checks"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server never came up"
+          exit 1
+
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:3000/
+            http://localhost:3000/about
+            http://localhost:3000/editorial-policy
+            http://localhost:3000/food-and-drink
+          # 4 runs per URL = median scoring, smooths out cold-start jitter.
+          runs: 4
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          # Per-category score gates. axe-core violations roll up into the
+          # Accessibility category — keeping it at 0.95 guarantees axe
+          # violations are caught.
+          configPath: ./.github/lighthouserc.json
+
+      # --- Optional: explicit axe sweep ---
+      # Uncomment + add `@axe-core/cli` to devDependencies if you want a
+      # standalone axe pass on top of Lighthouse's bundled axe.
+      #
+      # - name: Axe-core sweep
+      #   run: |
+      #     npx --yes @axe-core/cli http://localhost:3000/ \
+      #       http://localhost:3000/about \
+      #       http://localhost:3000/editorial-policy \
+      #       --exit
