@@ -1,0 +1,212 @@
+---
+/**
+ * /services — overview of the three non-food verticals.
+ *
+ * Acts as a sibling-of /food-and-drink: signals to readers that bhamranked
+ * will eventually rank home / personal / specialty-retail businesses too,
+ * without overpromising a launch date. Links each card to the actual
+ * `/[category]` landing page so the category landings stay canonical.
+ */
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Masthead from '../../components/Masthead.astro';
+import Footer from '../../components/Footer.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import SchemaLD from '../../components/SchemaLD.astro';
+import {
+  CATEGORY_LABELS,
+  SUBS_BY_CATEGORY,
+  SUB_CATEGORY_LABELS,
+} from '../../content/config';
+import type { Category } from '../../content/config';
+import { buildBreadcrumbSchema } from '../../lib/schema';
+
+const SERVICE_CATEGORIES: Category[] = [
+  'home-services',
+  'personal-services',
+  'specialty-retail',
+];
+
+const title = 'Services in Bellingham — coming later in 2026. bhamranked.';
+const description =
+  'Beyond food: ranked guides to home services, personal services, and specialty retail in Bellingham are in planning for late 2026. Same rules: visited in person, no paid placement.';
+
+const breadcrumbs = buildBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Services', url: '/services' },
+]);
+---
+
+<BaseLayout title={title} description={description} canonical="/services">
+  <Masthead />
+
+  <main class="container">
+    <section class="header">
+      <div class="kicker">Services</div>
+      <h1 class="display">
+        Beyond food, ranked the same way.
+      </h1>
+      <p class="lede">
+        bhamranked is starting with food and drink. Three more verticals are in planning for later in 2026: home services, personal services, and specialty retail. Same rules apply: visited in person, paid for, no comped service, no paid placement.
+      </p>
+    </section>
+
+    <section class="vertical-grid" aria-label="Service verticals">
+      {SERVICE_CATEGORIES.map((cat) => {
+        const subs = SUBS_BY_CATEGORY[cat];
+        return (
+          <a href={`/${cat}`} class="vertical-card">
+            <div class="card-kicker">Coming later in 2026</div>
+            <h2 class="card-title">{CATEGORY_LABELS[cat]}</h2>
+            <div class="planned-subs">
+              {subs.map((sub) => (
+                <span class="sub-chip">{SUB_CATEGORY_LABELS[sub] ?? sub}</span>
+              ))}
+            </div>
+          </a>
+        );
+      })}
+    </section>
+
+    <section class="why">
+      <h2>Why expand past food.</h2>
+      <p>
+        The most useful editorial directories in any town cover more than restaurants. A reader looking for an honest plumber, a quiet salon, or a specialty bookstore deserves the same treatment a brunch eater gets: one ranked answer, visited in person, no paid placement. bhamranked is built so that adding these verticals is a content question, not a platform migration.
+      </p>
+      <p>
+        The food guides ship first because that is where the audience reads daily. The other three verticals join once each one has at least five businesses visited and ranked.
+      </p>
+    </section>
+  </main>
+
+  <Newsletter
+    label="Newsletter · weekly"
+    headline="One ranking. In your inbox."
+    body="Subscribe to hear when each new vertical ships. One Bellingham spot per week in the meantime."
+  />
+
+  <Footer />
+
+  <SchemaLD blocks={breadcrumbs} />
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+
+  .header { padding: 4rem 0 3rem; }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    max-width: 20ch;
+    margin: 0 0 1.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .lede {
+    font-size: 1.3125rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .vertical-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .vertical-card {
+    display: block;
+    padding: 2rem;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    color: inherit;
+    transition: border-color 0.1s ease, background 0.1s ease;
+  }
+  .vertical-card:hover {
+    border-color: var(--color-text-primary);
+    background: var(--color-bg-elevated);
+  }
+
+  .card-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent-critique);
+    margin-bottom: 0.75rem;
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 0, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.875rem;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 1.25rem;
+    color: var(--color-text-primary);
+  }
+
+  .planned-subs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+  .sub-chip {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-bg-page);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .why {
+    margin-top: 4rem;
+    max-width: 65ch;
+  }
+  .why h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.875rem;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 1rem;
+  }
+  .why p {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .container { padding: 0 1rem 3rem; }
+    .header { padding: 2.5rem 0 2rem; }
+  }
+</style>

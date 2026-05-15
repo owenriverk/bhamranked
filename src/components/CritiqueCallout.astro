@@ -1,0 +1,48 @@
+---
+/**
+ * CritiqueCallout — "The honest critique" block.
+ *
+ * Required on every spot per the EEAT audit. Ochre left border + label.
+ * Body text in Instrument Sans. Pass critique copy via `text` prop or
+ * the default slot.
+ */
+
+interface Props {
+  text?: string;
+}
+
+const { text } = Astro.props;
+---
+
+<aside class="critique" aria-label="Honest critique">
+  <strong class="label">The honest critique</strong>
+  {text ? <p>{text}</p> : <slot />}
+</aside>
+
+<style>
+  .critique {
+    background: var(--color-bg-elevated);
+    border-left: 3px solid var(--color-accent-critique);
+    padding: 1.125rem 1.375rem;
+    margin: 0;
+  }
+
+  .label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent-critique);
+    margin-bottom: 0.375rem;
+    font-weight: 500;
+  }
+
+  .critique p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-text-primary);
+    max-width: 60ch;
+  }
+</style>

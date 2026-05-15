@@ -1,0 +1,144 @@
+---
+/**
+ * RankedRow — one row for ranks 02-N in a listicle.
+ *
+ * 4-column grid: rank-num | mini photo | content (name + takeaway) | meta.
+ * Photos use the same warm gradient placeholder as HeroSpot until real
+ * images are wired in.
+ */
+
+import type { Spot } from '../lib/types';
+
+interface Props {
+  spot: Spot;
+  /** Linkable companion feature slug for this spot. */
+  featureSlug?: string | null;
+  category: string;
+  subCategory: string;
+}
+
+const { spot, featureSlug, category, subCategory } = Astro.props;
+
+function fmt(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+const rankStr = String(spot.rank).padStart(2, '0');
+const featureUrl = featureSlug ? `/${category}/${subCategory}/features/${featureSlug}` : null;
+---
+
+<div class="rank-row" id={`rank-${spot.slug}`}>
+  <div class="rank-num">{rankStr}</div>
+
+  <div class="rank-photo" role="img" aria-label={`Photo of ${spot.name}`}></div>
+
+  <div class="rank-content">
+    {featureUrl ? (
+      <a href={featureUrl} class="name-link">
+        <h3 class="name">{spot.name}</h3>
+      </a>
+    ) : (
+      <h3 class="name">{spot.name}</h3>
+    )}
+    <p class="takeaway">{spot.takeaway}</p>
+  </div>
+
+  <div class="rank-meta">
+    <span class="visit-date">{fmt(spot.visit_date)}</span>
+    <span class="meta-line">{spot.neighborhood} <span aria-hidden="true">·</span> {spot.price_tier}</span>
+  </div>
+</div>
+
+<style>
+  .rank-row {
+    display: grid;
+    grid-template-columns: 60px 110px 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.125rem 0;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.1s ease, margin 0.1s ease, padding 0.1s ease;
+  }
+  .rank-row:hover {
+    background: var(--color-bg-elevated);
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .rank-num {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 2.375rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-accent);
+  }
+
+  .rank-photo {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, #D6B68A 0%, #A8804A 50%, #6B4E2B 100%);
+    opacity: 0.92;
+  }
+  :global([data-theme="dark"]) .rank-photo {
+    background: linear-gradient(135deg, #5A4628 0%, #3D2F1A 100%);
+  }
+
+  .rank-content { min-width: 0; }
+  .name-link {
+    color: inherit;
+    border: none;
+    text-decoration: none;
+  }
+  .name-link:hover .name { color: var(--color-accent); }
+
+  .name {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 0, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.25rem;
+    color: var(--color-text-primary);
+    transition: color 0.08s ease;
+  }
+
+  .takeaway {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    max-width: 60ch;
+  }
+
+  .rank-meta {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    text-align: right;
+    color: var(--color-text-muted);
+  }
+  .visit-date {
+    display: block;
+    color: var(--color-text-primary);
+  }
+  .meta-line { display: block; }
+
+  @media (max-width: 800px) {
+    .rank-row {
+      grid-template-columns: 44px 80px 1fr;
+      gap: 0.875rem;
+    }
+    .rank-num { font-size: 1.75rem; }
+    .name { font-size: 1.25rem; }
+    .takeaway { font-size: 0.875rem; }
+    .rank-meta { display: none; }
+  }
+</style>

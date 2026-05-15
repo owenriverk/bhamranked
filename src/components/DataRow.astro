@@ -1,0 +1,61 @@
+---
+/**
+ * DataRow — monospace grid of label/value pairs (per-spot data).
+ *
+ * Pass `rows` as an array of `{ label, value }`. Required fields per DESIGN.md:
+ *  - Address
+ *  - Hours
+ *  - Visited (ISO date + time if present)
+ *  - Booking (walk-in / reservations / appointments)
+ * Optional fields go after: Avg ticket, Phone, Accessibility, etc.
+ */
+
+interface Row {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  rows: Row[];
+}
+
+const { rows } = Astro.props;
+---
+
+<dl class="data-row">
+  {rows.map((row) => (
+    <>
+      <dt>{row.label}</dt>
+      <dd>{row.value}</dd>
+    </>
+  ))}
+</dl>
+
+<style>
+  .data-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.375rem;
+    margin: 2rem 0 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding-top: 0.125rem;
+  }
+
+  dd {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+</style>

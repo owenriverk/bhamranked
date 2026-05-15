@@ -1,0 +1,31 @@
+---
+/**
+ * SchemaLD — JSON-LD generator for editorial pages.
+ *
+ * Renders one or more <script type="application/ld+json"> blocks based on
+ * the `blocks` prop. Each block is a plain object (already shaped as
+ * schema.org JSON-LD). This component is intentionally dumb — composition
+ * happens at the layout level so the layout decides which blocks to emit.
+ *
+ * Use the exported helpers below to build well-formed blocks:
+ *   buildArticleSchema()        — Article + Person author
+ *   buildItemListSchema()       — ItemList of Reviews for a listicle
+ *   buildReviewSchema()         — a single Review with itemReviewed
+ *   buildLocalBusinessSchema()  — a LocalBusiness for a Spot
+ *   buildBreadcrumbSchema()     — BreadcrumbList for navigation
+ *   buildPersonSchema()         — author bio block
+ *
+ * Pass the helper output (one object or an array) as `blocks`.
+ */
+
+interface Props {
+  blocks: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { blocks } = Astro.props;
+const list = Array.isArray(blocks) ? blocks : [blocks];
+---
+
+{list.map((block) => (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(block, null, 0)} />
+))}

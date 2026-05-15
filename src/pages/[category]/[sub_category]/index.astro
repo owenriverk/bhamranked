@@ -1,0 +1,275 @@
+---
+/**
+ * Sub-category landing — lists published listicles for a sub-category.
+ *
+ *   /food-and-drink/brunch
+ *   /food-and-drink/coffee
+ *   /home-services/plumbers
+ *   ...
+ *
+ * If the sub-category has no published listicles, renders the same
+ * "Coming later in 2026" placeholder copy used on the parent category.
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Masthead from '../../../components/Masthead.astro';
+import Footer from '../../../components/Footer.astro';
+import Newsletter from '../../../components/Newsletter.astro';
+import SchemaLD from '../../../components/SchemaLD.astro';
+import {
+  CATEGORIES,
+  CATEGORY_LABELS,
+  SUBS_BY_CATEGORY,
+  SUB_CATEGORY_LABELS,
+} from '../../../content/config';
+import type { Category } from '../../../content/config';
+import { buildBreadcrumbSchema } from '../../../lib/schema';
+
+export async function getStaticPaths() {
+  const paths: { params: { category: string; sub_category: string } }[] = [];
+  for (const category of CATEGORIES) {
+    for (const sub of SUBS_BY_CATEGORY[category]) {
+      paths.push({ params: { category, sub_category: sub } });
+    }
+  }
+  return paths;
+}
+
+const { category, sub_category } = Astro.params;
+const cat = category as Category;
+const sub = sub_category as string;
+const categoryLabel = CATEGORY_LABELS[cat];
+const subLabel = SUB_CATEGORY_LABELS[sub] ?? sub;
+
+const now = new Date();
+const listicles = await getCollection('listicle', (entry) => {
+  const published = entry.data.published;
+  return (
+    entry.data.category === cat &&
+    entry.data.sub_category === sub &&
+    published !== null &&
+    published <= now
+  );
+});
+
+// Sort newest first.
+listicles.sort((a, b) => {
+  const ap = a.data.published?.getTime() ?? 0;
+  const bp = b.data.published?.getTime() ?? 0;
+  return bp - ap;
+});
+
+const hasContent = listicles.length > 0;
+
+const title = hasContent
+  ? `${subLabel} in Bellingham, ranked. bhamranked.`
+  : `${subLabel} in Bellingham — coming in 2026. bhamranked.`;
+
+const description = hasContent
+  ? `Editorial ${subLabel.toLowerCase()} guides for Bellingham, WA. Every spot visited in person, ranked with opinions. No paid placement.`
+  : `The ${subLabel.toLowerCase()} guide for Bellingham is in progress. First-person rankings, every spot visited, no paid placement. Subscribe to hear when it ships.`;
+
+const breadcrumbs = buildBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: categoryLabel, url: `/${cat}` },
+  { name: subLabel, url: `/${cat}/${sub}` },
+]);
+
+function fmt(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+---
+
+<BaseLayout title={title} description={description} canonical={`/${cat}/${sub}`}>
+  <Masthead />
+
+  <main class="container">
+    <section class="header">
+      <div class="kicker">
+        <a href={`/${cat}`}>{categoryLabel}</a> · {subLabel}
+      </div>
+      <h1 class="display">
+        {hasContent ? `${subLabel} in Bellingham, ranked.` : `${subLabel} guide is coming.`}
+      </h1>
+      <p class="lede">
+        {hasContent
+          ? `Every guide below ranks the ${subLabel.toLowerCase()} spots visited in person between the dates listed. Pick the most recent ranking, or browse the rest.`
+          : `The first ${subLabel.toLowerCase()} ranking ships once at least five spots have been visited. Owen visits each one in person and pays for every service. Subscribe to be notified.`}
+      </p>
+    </section>
+
+    {hasContent ? (
+      <section class="guide-list" aria-label={`${subLabel} guides`}>
+        {listicles.map((entry) => (
+          <a href={`/${cat}/${sub}/${entry.data.slug}`} class="guide-card">
+            <h2 class="guide-title">{entry.data.title}</h2>
+            <p class="guide-dek">{entry.data.description}</p>
+            <div class="guide-meta">
+              {entry.data.published && (
+                <span class="mono">Published {fmt(entry.data.published)}</span>
+              )}
+              <span class="sep" aria-hidden="true">·</span>
+              <span class="mono">{entry.data.ranked_spots.length} ranked</span>
+            </div>
+          </a>
+        ))}
+      </section>
+    ) : (
+      <section class="placeholder">
+        <div class="kicker">Coming later in 2026</div>
+        <p class="placeholder-note">
+          Sibling categories that are already live:
+        </p>
+        <div class="sibling-list">
+          {SUBS_BY_CATEGORY[cat]
+            .filter((other) => other !== sub)
+            .map((other) => (
+              <a href={`/${cat}/${other}`}>{SUB_CATEGORY_LABELS[other] ?? other}</a>
+            ))}
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Newsletter />
+  <Footer />
+
+  <SchemaLD blocks={breadcrumbs} />
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+
+  .header { padding: 4rem 0 3rem; }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1.5rem;
+  }
+  .kicker a {
+    color: var(--color-accent);
+    border-bottom: 1px solid transparent;
+  }
+  .kicker a:hover { border-bottom-color: var(--color-accent); }
+
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    max-width: 22ch;
+    margin: 0 0 1.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .lede {
+    font-size: 1.3125rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .guide-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .guide-card {
+    display: block;
+    padding: 2rem;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    color: inherit;
+    transition: border-color 0.1s ease, background 0.1s ease;
+  }
+  .guide-card:hover {
+    border-color: var(--color-text-primary);
+    background: var(--color-bg-elevated);
+  }
+
+  .guide-title {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.875rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.75rem;
+  }
+
+  .guide-dek {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    max-width: 65ch;
+    margin: 0 0 1.25rem;
+  }
+
+  .guide-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+  }
+  .guide-meta .sep { color: var(--color-border); }
+  .guide-meta .mono { font-variant-numeric: tabular-nums; }
+
+  .placeholder {
+    background: var(--color-bg-elevated);
+    padding: 3rem;
+    border-radius: 2px;
+    max-width: 760px;
+  }
+  .placeholder .kicker { margin-bottom: 1rem; }
+  .placeholder-note {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+  }
+  .sibling-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+  .sibling-list a {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    color: var(--color-text-primary);
+  }
+  .sibling-list a:hover {
+    border-color: var(--color-text-primary);
+  }
+
+  @media (max-width: 800px) {
+    .container { padding: 0 1rem 3rem; }
+    .header { padding: 2.5rem 0 2rem; }
+    .placeholder { padding: 1.75rem; }
+    .guide-card { padding: 1.5rem; }
+    .guide-title { font-size: 1.5rem; }
+  }
+</style>

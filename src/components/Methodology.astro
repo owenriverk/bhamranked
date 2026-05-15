@@ -1,0 +1,112 @@
+---
+/**
+ * Methodology — appears at the bottom of every editorial piece.
+ *
+ * Two-column grid: heading on the left, body + policy disclosure on the right.
+ * The disclosure sentence is verbatim from the piece's frontmatter so the
+ * EEAT auditor can grep for the exact string on a rendered page.
+ *
+ * Owen does NOT write methodology copy here. The default slot accepts piece-
+ * specific methodology paragraphs (how he visited / how he ranked) from the
+ * layout, which pulls from frontmatter or constants.
+ */
+
+interface Props {
+  disclosure: string;
+  visitRange?: { start: Date; end: Date };
+}
+
+const { disclosure, visitRange } = Astro.props;
+
+function fmt(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+---
+
+<section class="methodology" aria-labelledby="methodology-heading">
+  <h2 id="methodology-heading">How this list was made.</h2>
+  <div class="body">
+    {visitRange ? (
+      <p class="visit-window">
+        Visits between <span class="mono">{fmt(visitRange.start)}</span> and <span class="mono">{fmt(visitRange.end)}</span>. Every meal paid for; no business knew it was being reviewed at the time of visit.
+      </p>
+    ) : (
+      <p class="visit-window">
+        Every visit was paid for; no business knew it was being reviewed at the time of visit.
+      </p>
+    )}
+
+    <p class="disclosure">{disclosure}</p>
+
+    <slot />
+
+    <a href="/editorial-policy" class="policy-link">Full editorial policy →</a>
+  </div>
+</section>
+
+<style>
+  .methodology {
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--color-text-primary);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3.5rem;
+  }
+
+  .methodology h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0;
+    max-width: 12ch;
+    color: var(--color-text-primary);
+  }
+
+  .body p {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    max-width: 65ch;
+    margin: 0 0 1rem;
+  }
+
+  .body .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    color: var(--color-text-primary);
+  }
+
+  .body .disclosure {
+    color: var(--color-text-primary);
+  }
+
+  .policy-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    border-bottom: 1px solid transparent;
+  }
+  .policy-link:hover { border-bottom-color: var(--color-accent); }
+
+  @media (max-width: 800px) {
+    .methodology {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+    }
+    .methodology h2 { max-width: none; }
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+/**
+ * VerdictPullquote — italic Fraunces, mountain green, left border.
+ *
+ * One per piece. The editorial thesis sentence. Use sparingly: this is
+ * the colour that signals "this is the verdict, not commentary."
+ *
+ * Pass the verdict string as `text`. Avoid em dashes (commas/semicolons).
+ */
+
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<blockquote class="verdict">{text}</blockquote>
+
+<style>
+  .verdict {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 18;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.35;
+    color: var(--color-accent-verdict);
+    padding-left: 1.125rem;
+    border-left: 2px solid var(--color-accent-verdict);
+    margin: 0 0 1.75rem;
+  }
+
+  @media (max-width: 800px) {
+    .verdict { font-size: 1.3125rem; }
+  }
+</style>

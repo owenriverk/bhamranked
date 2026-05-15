@@ -1,0 +1,115 @@
+---
+/**
+ * Feature renderer — companion feature piece for a listicle.
+ *
+ *   /food-and-drink/brunch/features/old-pier-cafe
+ *
+ * Resolves a feature MDX entry to a category/sub_category by walking
+ * the parent_listicle pointer. Pulls the feature's verdict + critique +
+ * data rows from MDX frontmatter via custom fields.
+ *
+ * Required MDX frontmatter beyond the schema (used here):
+ *   verdict        — string, editorial thesis
+ *   critique       — string, honest critique callout body
+ *   review_body    — string, what goes into JSON-LD Review.reviewBody
+ *   data_rows      — array of { label, value }
+ *   rating_value   — optional 1-5 number
+ *
+ * If those fields are missing, the layout falls back gracefully — but
+ * the EEAT auditor will flag the page. Add them when publishing.
+ */
+
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import FeatureLayout from '../../../../layouts/FeatureLayout.astro';
+
+export async function getStaticPaths() {
+  const features = await getCollection('feature', (entry) => {
+    const published = entry.data.published;
+    return published !== null && published <= new Date();
+  });
+
+  // Resolve each feature's category + sub_category by finding the
+  // parent listicle. If no parent exists, skip (the schema requires
+  // parent_listicle but a stale pointer would skip silently).
+  const listicles = await getCollection('listicle');
+
+  return features
+    .map((entry) => {
+      const parent = listicles.find(
+        (l) =>
+          l.data.slug === entry.data.parent_listicle ||
+          l.id === entry.data.parent_listicle,
+      );
+      if (!parent) return null;
+      return {
+        params: {
+          category: parent.data.category,
+          sub_category: parent.data.sub_category,
+          slug: entry.data.slug,
+        },
+        props: {
+          entry,
+          category: parent.data.category,
+          subCategory: parent.data.sub_category,
+        },
+      };
+    })
+    .filter((p): p is NonNullable<typeof p> => p !== null);
+}
+
+interface DataRow {
+  label: string;
+  value: string;
+}
+
+interface FeatureFrontmatterExtras {
+  verdict?: string;
+  critique?: string;
+  review_body?: string;
+  data_rows?: DataRow[];
+  rating_value?: number;
+}
+
+const { entry, category, subCategory } = Astro.props as {
+  entry: CollectionEntry<'feature'>;
+  category: string;
+  subCategory: string;
+};
+const { Content } = await entry.render();
+
+// Cast frontmatter to pull untyped extras. These are MDX-author-provided
+// fields not in the strict collection schema (we keep the strict schema
+// minimal so adding a feature is low friction; verdict + critique are
+// loaded conventionally).
+const extras = entry.data as unknown as FeatureFrontmatterExtras &
+  CollectionEntry<'feature'>['data'];
+
+const verdict = extras.verdict ?? '[OWEN INPUT NEEDED] verdict pullquote for this feature.';
+const critique = extras.critique ?? '[OWEN INPUT NEEDED] honest critique for this feature.';
+const reviewBody = extras.review_body ?? entry.data.description;
+const dataRows: DataRow[] = extras.data_rows ?? [
+  { label: 'Address', value: entry.data.address },
+  { label: 'Neighborhood', value: entry.data.neighborhood },
+  {
+    label: 'Visits',
+    value: entry.data.visit_dates
+      .map((d) => d.toISOString().slice(0, 10))
+      .join(', '),
+  },
+];
+const ratingValue = extras.rating_value;
+---
+
+<FeatureLayout
+  entry={entry}
+  category={category}
+  subCategory={subCategory}
+  verdict={verdict}
+  critique={critique}
+  reviewBody={reviewBody}
+  dataRows={dataRows}
+  ratingValue={ratingValue}
+>
+  <Content />
+</FeatureLayout>

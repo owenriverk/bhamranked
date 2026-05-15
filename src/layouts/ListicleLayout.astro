@@ -1,0 +1,180 @@
+---
+/**
+ * ListicleLayout — full editorial listicle page.
+ *
+ * Composition (top to bottom):
+ *   BaseLayout
+ *     Masthead
+ *     TrustStrip
+ *     ArticleHeader
+ *     HeroSpot (rank 01)
+ *     RankedRow × N (ranks 02-N)
+ *     HonorableMentions
+ *     Methodology
+ *     Newsletter
+ *     Footer
+ *   JSON-LD blocks (Article + ItemList + BreadcrumbList)
+ *
+ * Owen writes no copy here. All voice-bearing strings come from the MDX
+ * frontmatter; body prose for the hero #1 spot comes through the default
+ * slot. Spots 02-N show takeaway only (no body slot) per the "tight rows"
+ * pattern in DESIGN.md.
+ */
+
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import Footer from '../components/Footer.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import ArticleHeader from '../components/ArticleHeader.astro';
+import HeroSpot from '../components/HeroSpot.astro';
+import RankedRow from '../components/RankedRow.astro';
+import HonorableMentions from '../components/HonorableMentions.astro';
+import Methodology from '../components/Methodology.astro';
+import Newsletter from '../components/Newsletter.astro';
+import SchemaLD from '../components/SchemaLD.astro';
+import { CATEGORY_LABELS, SUB_CATEGORY_LABELS } from '../content/config';
+import type { Category } from '../content/config';
+import type { Spot } from '../lib/types';
+import {
+  buildArticleSchema,
+  buildItemListSchema,
+  buildBreadcrumbSchema,
+} from '../lib/schema';
+
+interface Props {
+  entry: CollectionEntry<'listicle'>;
+  /** Verdict pullquote for the #1 hero spot — short editorial thesis. */
+  heroVerdict: string;
+}
+
+const { entry, heroVerdict } = Astro.props;
+const data = entry.data;
+
+const category = data.category as Category;
+const subCategory = data.sub_category;
+const categoryLabel = CATEGORY_LABELS[category];
+const subCategoryLabel = SUB_CATEGORY_LABELS[subCategory] ?? subCategory;
+
+const publishedDate = data.published ?? new Date();
+const canonicalPath = `/${category}/${subCategory}/${data.slug}`;
+
+// Ranked rows excluding the hero (rank 01).
+const restOfList: Spot[] = [...data.ranked_spots]
+  .sort((a, b) => a.rank - b.rank)
+  .filter((s) => s.rank !== 1);
+
+// All spots (including hero) for the ItemList schema, in rank order.
+const allSpots: Spot[] = [data.hero_spot, ...data.ranked_spots]
+  .filter((s, i, arr) => arr.findIndex((x) => x.slug === s.slug) === i)
+  .sort((a, b) => a.rank - b.rank);
+
+const kicker = `The ${subCategoryLabel} Guide · ${allSpots.length} ranked`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: categoryLabel, url: `/${category}` },
+  { name: subCategoryLabel, url: `/${category}/${subCategory}` },
+  { name: data.title, url: canonicalPath },
+];
+
+const schemaBlocks = [
+  buildArticleSchema({
+    title: data.title,
+    description: data.description,
+    slug: canonicalPath,
+    published: publishedDate,
+    modified: data.last_verified,
+  }),
+  buildItemListSchema({
+    name: data.title,
+    description: data.description,
+    url: canonicalPath,
+    spots: allSpots,
+    itemType: category === 'food-and-drink' ? 'Restaurant' : 'LocalBusiness',
+  }),
+  buildBreadcrumbSchema(breadcrumbs),
+];
+---
+
+<BaseLayout title={data.title} description={data.description} canonical={canonicalPath}>
+  <Masthead />
+  <TrustStrip visitRange={data.visit_date_range} lastVerified={data.last_verified} />
+
+  <main class="container">
+    <ArticleHeader
+      kicker={kicker}
+      title={data.title}
+      dek={data.description}
+      published={publishedDate}
+    />
+
+    <HeroSpot
+      spot={data.hero_spot}
+      verdict={heroVerdict}
+      featureSlug={data.companion_feature}
+      category={category}
+      subCategory={subCategory}
+    >
+      <slot />
+    </HeroSpot>
+
+    {restOfList.length > 0 && (
+      <section class="ranked-list" aria-labelledby="ranked-heading">
+        <h2 id="ranked-heading" class="section-label">
+          The rest of the top {allSpots.length} · in order
+        </h2>
+        {restOfList.map((spot) => (
+          <RankedRow
+            spot={spot}
+            featureSlug={null}
+            category={category}
+            subCategory={subCategory}
+          />
+        ))}
+      </section>
+    )}
+
+    {data.honorable_mentions && data.honorable_mentions.length > 0 && (
+      <HonorableMentions mentions={data.honorable_mentions} />
+    )}
+
+    <Methodology
+      disclosure={data.disclosure}
+      visitRange={data.visit_date_range}
+    />
+  </main>
+
+  <Newsletter />
+  <Footer />
+
+  <SchemaLD blocks={schemaBlocks} />
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  .ranked-list {
+    padding: 3rem 0 0;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 400;
+  }
+
+  @media (max-width: 800px) {
+    .container { padding: 0 1rem 3rem; }
+  }
+</style>

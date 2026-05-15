@@ -1,0 +1,98 @@
+---
+/**
+ * HonorableMentions — list of spots Owen visited but chose not to rank.
+ *
+ * Each entry has a name plus a short reason (closed for renovation, single
+ * dish only, etc.) so the section signals real visits rather than padding.
+ */
+
+import type { HonorableMention } from '../lib/types';
+
+interface Props {
+  mentions: HonorableMention[];
+}
+
+const { mentions } = Astro.props;
+---
+
+{mentions.length > 0 && (
+  <section class="honorable" aria-labelledby="honorable-heading">
+    <h2 id="honorable-heading">Honorable mentions</h2>
+    <p class="lede">
+      Spots visited and chosen not to rank. Each one has a reason; none of them are filler.
+    </p>
+    <ul class="mention-list">
+      {mentions.map((m) => (
+        <li class="mention">
+          <span class="mention-name">{m.name}</span>
+          <span class="mention-reason">{m.reason}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .honorable {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: var(--color-bg-elevated);
+    border-radius: 2px;
+  }
+
+  .honorable h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.75rem;
+    margin: 0 0 0.75rem;
+    color: var(--color-text-primary);
+  }
+
+  .lede {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    max-width: 65ch;
+    margin: 0 0 1.5rem;
+  }
+
+  .mention-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.625rem;
+  }
+
+  .mention {
+    display: grid;
+    grid-template-columns: minmax(8rem, 14rem) 1fr;
+    gap: 1.125rem;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .mention:first-child { border-top: none; padding-top: 0; }
+
+  .mention-name {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 0, "opsz" 144;
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .mention-reason {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    max-width: 60ch;
+  }
+
+  @media (max-width: 800px) {
+    .honorable { padding: 1.5rem; }
+    .mention { grid-template-columns: 1fr; gap: 0.25rem; }
+  }
+</style>

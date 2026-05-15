@@ -1,0 +1,250 @@
+---
+/**
+ * FeatureLayout — companion feature piece (magazine spread).
+ *
+ * Looser than the listicle. One spot, deeper. Asymmetric whitespace,
+ * mid-piece pullquote allowed, body prose has more breathing room.
+ *
+ * Composition:
+ *   BaseLayout
+ *     Masthead
+ *     TrustStrip
+ *     ArticleHeader (kicker carries the spot name)
+ *     [default slot — long-form prose]
+ *     DataRow
+ *     VerdictPullquote (one editorial thesis)
+ *     CritiqueCallout
+ *     Methodology
+ *     Newsletter
+ *     Footer
+ *   JSON-LD: Article + Review + BreadcrumbList
+ */
+
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import Footer from '../components/Footer.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import ArticleHeader from '../components/ArticleHeader.astro';
+import VerdictPullquote from '../components/VerdictPullquote.astro';
+import CritiqueCallout from '../components/CritiqueCallout.astro';
+import DataRow from '../components/DataRow.astro';
+import Methodology from '../components/Methodology.astro';
+import Newsletter from '../components/Newsletter.astro';
+import SchemaLD from '../components/SchemaLD.astro';
+import { CATEGORY_LABELS, SUB_CATEGORY_LABELS } from '../content/config';
+import type { Spot } from '../lib/types';
+import {
+  buildArticleSchema,
+  buildReviewSchema,
+  buildBreadcrumbSchema,
+} from '../lib/schema';
+
+interface Props {
+  entry: CollectionEntry<'feature'>;
+  /** The category this feature lives under (for breadcrumbs + URLs). */
+  category: string;
+  /** The sub-category this feature lives under. */
+  subCategory: string;
+  /** The verdict pullquote for this feature. */
+  verdict: string;
+  /** The honest critique callout. */
+  critique: string;
+  /** Body of the review (used in JSON-LD Review). */
+  reviewBody: string;
+  /** Data row entries (Address, Hours, Visits, Booking, etc.). */
+  dataRows: { label: string; value: string }[];
+  /** Optional rating value (1-5). */
+  ratingValue?: number;
+}
+
+const {
+  entry,
+  category,
+  subCategory,
+  verdict,
+  critique,
+  reviewBody,
+  dataRows,
+  ratingValue,
+} = Astro.props;
+
+const data = entry.data;
+const publishedDate = data.published ?? new Date();
+const canonicalPath = `/${category}/${subCategory}/features/${data.slug}`;
+
+const categoryLabel = CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] ?? category;
+const subCategoryLabel = SUB_CATEGORY_LABELS[subCategory] ?? subCategory;
+
+const kicker = `Feature · ${data.spot_name} · ${data.neighborhood}`;
+
+// Build a synthetic Spot for the Review schema. The feature collection
+// schema is leaner than the listicle Spot, so we backfill the missing
+// fields with sane defaults.
+const syntheticSpot: Spot = {
+  rank: 1,
+  name: data.spot_name,
+  slug: data.slug,
+  neighborhood: data.neighborhood,
+  price_tier: '$$',
+  address: data.address,
+  hours: dataRows.find((r) => r.label.toLowerCase().includes('hour'))?.value ?? 'See below',
+  booking: dataRows.find((r) => r.label.toLowerCase().includes('book'))?.value ?? 'See below',
+  visit_date: data.visit_dates[0] ?? publishedDate,
+  photo: data.hero_photo,
+  takeaway: reviewBody.slice(0, 380),
+  honest_critique: critique,
+};
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: categoryLabel, url: `/${category}` },
+  { name: subCategoryLabel, url: `/${category}/${subCategory}` },
+  { name: data.spot_name, url: canonicalPath },
+];
+
+const schemaBlocks = [
+  buildArticleSchema({
+    title: data.title,
+    description: data.description,
+    slug: canonicalPath,
+    published: publishedDate,
+    modified: data.last_verified,
+  }),
+  buildReviewSchema({
+    spot: syntheticSpot,
+    reviewBody,
+    ratingValue,
+    itemType: category === 'food-and-drink' ? 'Restaurant' : 'LocalBusiness',
+    reviewUrl: canonicalPath,
+  }),
+  buildBreadcrumbSchema(breadcrumbs),
+];
+---
+
+<BaseLayout title={data.title} description={data.description} canonical={canonicalPath}>
+  <Masthead />
+  <TrustStrip lastVerified={data.last_verified} />
+
+  <main class="container">
+    <ArticleHeader
+      kicker={kicker}
+      title={data.title}
+      dek={data.description}
+      published={publishedDate}
+    />
+
+    <div class="feature-grid">
+      <div class="feature-hero" role="img" aria-label={`Photo of ${data.spot_name}`}>
+        <span class="placeholder-label">Photo</span>
+      </div>
+
+      <article class="feature-body">
+        <div class="prose">
+          <slot />
+        </div>
+
+        <VerdictPullquote text={verdict} />
+
+        <DataRow rows={dataRows} />
+
+        <div class="critique-wrap">
+          <CritiqueCallout text={critique} />
+        </div>
+
+        {data.parent_listicle && (
+          <a href={`/${category}/${subCategory}/${data.parent_listicle}`} class="back-link">
+            Back to the {subCategoryLabel.toLowerCase()} ranking
+          </a>
+        )}
+      </article>
+    </div>
+
+    <Methodology disclosure={data.disclosure} />
+  </main>
+
+  <Newsletter />
+  <Footer />
+
+  <SchemaLD blocks={schemaBlocks} />
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 1rem 0 2rem;
+  }
+
+  .feature-hero {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #D6B68A 0%, #A8804A 50%, #6B4E2B 100%);
+    border-radius: 2px;
+  }
+  :global([data-theme="dark"]) .feature-hero {
+    background: linear-gradient(135deg, #5A4628 0%, #3D2F1A 100%);
+  }
+  .feature-hero .placeholder-label {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    background: rgba(20, 19, 26, 0.85);
+    color: #F0EDE6;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    padding: 0.3125rem 0.5625rem;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .feature-body {
+    max-width: 70ch;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .prose :global(p) {
+    margin: 0 0 1.25rem;
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--color-text-primary);
+  }
+  .prose :global(p:first-of-type::first-letter) {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    float: left;
+    font-size: 4rem;
+    line-height: 0.85;
+    padding: 0.5rem 0.75rem 0 0;
+    color: var(--color-accent);
+  }
+
+  .critique-wrap { margin-top: 2rem; }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 2.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 0.125rem;
+  }
+
+  @media (max-width: 800px) {
+    .container { padding: 0 1rem 3rem; }
+    .feature-grid { gap: 2rem; }
+    .prose :global(p:first-of-type::first-letter) { font-size: 3rem; }
+  }
+</style>

@@ -1,0 +1,105 @@
+---
+/**
+ * ArticleHeader — kicker, H1 headline, dek, byline row.
+ *
+ * Composable: used by ListicleLayout and FeatureLayout. All voice-bearing
+ * copy comes in as props (title, dek, kicker). Byline is fixed to Owen.
+ */
+
+interface Props {
+  kicker: string;
+  title: string;
+  dek: string;
+  published: Date | null;
+  readMinutes?: number;
+}
+
+const { kicker, title, dek, published, readMinutes } = Astro.props;
+
+function fmt(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+---
+
+<header class="article-header">
+  <div class="kicker">{kicker}</div>
+  <h1 class="headline">{title}</h1>
+  <p class="dek">{dek}</p>
+  <div class="byline">
+    <span>by <strong>Owen</strong></span>
+    {published && (
+      <>
+        <span class="sep" aria-hidden="true">·</span>
+        <span class="mono">Published <time datetime={published.toISOString()}>{fmt(published)}</time></span>
+      </>
+    )}
+    {readMinutes && (
+      <>
+        <span class="sep" aria-hidden="true">·</span>
+        <span class="mono">{readMinutes} min read</span>
+      </>
+    )}
+  </div>
+</header>
+
+<style>
+  .article-header {
+    padding: 4rem 0 3rem;
+  }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1.25rem;
+  }
+
+  .headline {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 6.5vw, 4.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+    margin: 0 0 1.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .dek {
+    font-size: 1.3125rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .byline {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1.125rem;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .byline strong {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+  .byline .sep { color: var(--color-border); }
+  .byline .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 800px) {
+    .article-header { padding: 2.5rem 0 2rem; }
+  }
+</style>

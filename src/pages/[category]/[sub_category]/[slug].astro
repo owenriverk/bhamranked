@@ -1,0 +1,54 @@
+---
+/**
+ * Listicle renderer — one URL per published listicle.
+ *
+ *   /food-and-drink/brunch/best-brunch-bellingham
+ *   /home-services/plumbers/best-plumbers-bellingham  (eventually)
+ *
+ * Pulls the MDX entry, renders it through ListicleLayout. The MDX body
+ * is passed into the layout's default slot, which routes into the
+ * HeroSpot's body slot.
+ */
+
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import ListicleLayout from '../../../layouts/ListicleLayout.astro';
+
+export async function getStaticPaths() {
+  const all = await getCollection('listicle', (entry) => {
+    const published = entry.data.published;
+    return published !== null && published <= new Date();
+  });
+
+  return all.map((entry) => ({
+    params: {
+      category: entry.data.category,
+      sub_category: entry.data.sub_category,
+      slug: entry.data.slug,
+    },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'listicle'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+/**
+ * The verdict pullquote is the editorial thesis sentence Owen writes
+ * inline in the MDX. We expose it via the MDX frontmatter through a
+ * conventional field on the hero spot — `takeaway` of the hero spot
+ * is the listicle's verdict. (See DESIGN.md: one verdict per piece.)
+ *
+ * If Owen wants a separate verdict string, add a `hero_verdict` field
+ * to the schema later. For now: hero_spot.takeaway is the verdict.
+ */
+const heroVerdict = entry.data.hero_spot.takeaway;
+---
+
+<ListicleLayout entry={entry} heroVerdict={heroVerdict}>
+  <Content />
+</ListicleLayout>
