@@ -32,15 +32,9 @@ const {
     <h2 id="newsletter-heading">{headline}</h2>
     <p>{body}</p>
 
-    <div class="signup-iframe-wrap">
-      <iframe
-        src="https://embeds.beehiiv.com/32ceef31-5c45-4b5e-bb4c-817b53183c6a?slim=true"
-        title="Subscribe to bhamranked"
-        loading="lazy"
-        frameborder="0"
-        scrolling="no"
-        class="signup-iframe"
-      ></iframe>
+    <div class="signup-form-wrap">
+      <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="f3fabe34-b541-4f5f-9468-8f8f9b0559a8"></script>
+      <script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
     </div>
 
     <p class="fine">No spam. ~600 words per email. Unsubscribe in one click.</p>
@@ -88,17 +82,11 @@ const {
     margin: 0 0 1.5rem;
   }
 
-  .signup-iframe-wrap {
+  .signup-form-wrap {
     max-width: 480px;
     margin-bottom: 0.75rem;
     background: transparent;
-  }
-  .signup-iframe {
-    display: block;
-    width: 100%;
     min-height: 80px;
-    border: 0;
-    background: transparent;
   }
 
   .fine {
@@ -113,6 +101,6 @@ const {
   @media (max-width: 800px) {
     .newsletter-inner { padding: 2rem 1rem; }
     h2 { font-size: 1.75rem; }
-    .signup-iframe { min-height: 90px; }
+    .signup-form-wrap { min-height: 100px; }
   }
 </style>

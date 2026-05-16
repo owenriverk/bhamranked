@@ -44,15 +44,9 @@ const schemaBlocks = [
         <div class="status-label">Status</div>
         <h2 class="status-headline">Site is live. First piece is coming.</h2>
         <p>The Bellingham brunch guide ships next. Subscribe below if you want the first piece in your inbox before it lands on Google.</p>
-        <div class="newsletter-iframe-wrap">
-          <iframe
-            src="https://embeds.beehiiv.com/32ceef31-5c45-4b5e-bb4c-817b53183c6a?slim=true"
-            title="Subscribe to bhamranked"
-            loading="lazy"
-            frameborder="0"
-            scrolling="no"
-            class="newsletter-iframe"
-          ></iframe>
+        <div class="newsletter-form-wrap">
+          <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="f3fabe34-b541-4f5f-9468-8f8f9b0559a8"></script>
+          <script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
         </div>
         <p class="fine">~600 words per email. Unsubscribe in one click. No spam, ever.</p>
       </div>
@@ -180,22 +174,16 @@ const schemaBlocks = [
     letter-spacing: 0.02em;
   }
 
-  .newsletter-iframe-wrap {
+  .newsletter-form-wrap {
     max-width: 480px;
     margin-bottom: 0.75rem;
     background: transparent;
-  }
-  .newsletter-iframe {
-    display: block;
-    width: 100%;
     min-height: 80px;
-    border: 0;
-    background: transparent;
   }
 
   @media (max-width: 800px) {
     .hero { padding: 3rem 0 2rem; }
     .status-card { padding: 2rem 1.5rem; }
-    .newsletter-iframe { min-height: 90px; }
+    .newsletter-form-wrap { min-height: 100px; }
   }
 </style>
